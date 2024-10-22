@@ -69,7 +69,7 @@ function fetchPositions() {
     // TODO: how will fetchPositions talk to the backend?
     //      decide upon format
     // Make a POST request to the backend
-    console.log(bboxString);
+    console.log('Bounding Box:', bbox);
 }
 
 
