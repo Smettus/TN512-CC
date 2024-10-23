@@ -1,0 +1,59 @@
+[
+  {
+    "Type": "Plane",
+    "Coordinates": {
+      "lat": 52.308613,
+      "lon": 4.763889
+    },
+    "Properties": {
+      "Enemy": false,
+      "Time_position": "2024-10-05T12:34:56Z",
+      "Geo_altitude": 10500,
+      "Velocity": 450,
+      "True_track": 270,
+      "Call_sign": "KLM123",
+      "Origin_country": "Netherlands",
+      "On_ground": false,
+      "Category": 1,
+      "Size": "Large"
+    }
+  },
+  {
+    "Type": "Plane",
+    "Coordinates": {
+      "lat": 40.712776,
+      "lon": -74.005974
+    },
+    "Properties": {
+      "Enemy": true,
+      "Time_position": "2024-10-05T13:22:11Z",
+      "Geo_altitude": 8500,
+      "Velocity": 550,
+      "True_track": 90,
+      "Call_sign": "BAW456",
+      "Origin_country": "United Kingdom",
+      "On_ground": false,
+      "Category": 1,
+      "Size": "Medium"
+    }
+  },
+  {
+    "Type": "Ship",
+    "Coordinates": {
+      "lat": 36.778259,
+      "lon": -119.417931
+    },
+    "Properties": {
+      "Enemy": false,
+      "Time_position": "2024-10-05T14:12:45Z",
+      "Geo_altitude": 0,
+      "Velocity": 30,
+      "True_track": 180,
+      "Call_sign": "SHIP789",
+      "Origin_country": "USA",
+      "On_ground": true,
+      "Category": 3,
+      "Size": "Large"
+    }
+  }
+]

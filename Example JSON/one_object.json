@@ -1,0 +1,19 @@
+{
+  "Type": "Plane", 
+  "Coordinates": {
+    "lat": 52.308613, 
+    "lon": 4.763889
+  },
+  "Properties": {
+    "Enemy": false,
+    "Time_position": "2024-10-05T12:34:56Z",
+    "Geo_altitude": 10500,
+    "Velocity": 450,
+    "True_track": 270,
+    "Call_sign": "KLM123",
+    "Origin_country": "Netherlands",
+    "On_ground": false,
+    "Category": 1,
+    "Size": "Large"
+  }
+}
