@@ -25,7 +25,7 @@ import websockets
 Map.js will send a request to the backend server to get all the planes in the desired area. This area is the visible part of the map on the sceren!
 
 It will send a JSON file as request witht he following format.
-```JSON
+```
 {
     'command': String of the desired command: POST, GET, QUIT, INTERACTIVE ,
     'data': bbox of the area
@@ -33,7 +33,7 @@ It will send a JSON file as request witht he following format.
 ```
 
 Example: 
-```json
+```
 {
     'command': 'GET', 
     'data': {'southwest': {'lat': 50.810382245925, 'lng': 4.283638000488282}, 'northwest': {'lat': 50.9137489045753, 'lng': 4.283638000488282}, 'northeast': {'lat': 50.9137489045753, 'lng': 4.60653305053711}, 'southeast': {'lat': 50.810382245925, 'lng': 4.60653305053711}}
