@@ -48,6 +48,13 @@ var geojsonLayer = L.geoJSON(geojson_planes, {
 // for adding markers
 */
 
+// Function to initially connect to the back end server
+function connectSocket(s){
+    s.addEventListener('open', function (event) {
+        console.log('Connected to the WebSocket server');
+        s.send('Hello from JavaScript Client!');
+    });
+}
 
 
 
@@ -61,6 +68,23 @@ function getBoundingBox() {
         southeast: { lat: bounds.getSouthWest().lat, lng: bounds.getNorthEast().lng }
     };
 }
+
+// Function to covnert the bbox to with command to a json
+function createJson(data_input, command = 'GET') {
+    const result = {
+        command: command,
+        data: data_input
+    };
+
+    return JSON.stringify(result);
+}
+
+
+// Create a WebSocket client
+const socket = new WebSocket('ws://localhost:65432');
+// Connect client to server and check if connected on server!
+connectSocket(socket)
+
 function fetchPositions() {
     var bbox = getBoundingBox();
     var bboxString = `${bbox.southwest.lng},${bbox.southwest.lat},${bbox.northwest.lng},${bbox.northwest.lat},${bbox.northeast.lng},${bbox.northeast.lat},${bbox.southeast.lng},${bbox.southeast.lat}`;
@@ -70,7 +94,19 @@ function fetchPositions() {
     //      decide upon format
     // Make a POST request to the backend
     console.log('Bounding Box:', bbox);
+
+    // Check if the socket is open before sending
+    if (socket.readyState === WebSocket.OPEN) {
+        console.log('Sending bbox to the backend server');
+        const jsonBbox = createJson(bbox)
+
+        socket.send(jsonBbox);
+    } else {
+        console.log('WebSocket is not open. Current state:', socket.readyState);
+    }
+
 }
+
 
 
 map.on('moveend', fetchPositions);
