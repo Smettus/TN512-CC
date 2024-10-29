@@ -19,7 +19,7 @@ This is just to test run the file.
 
 
 
-## Backend - 
+## Backend - Server
 The backend server will handle the API calls requested by the web application. It uses a python websocket to establish the connection with the webapp. The server is currently running on `localhost:65432`. 
 
 ### Current State
