@@ -26,7 +26,7 @@ def handle_command(data):
         Will return the requested data 
         
         =============*** TO DO ***=============
-        >>> Send json witht he planes to geojson part of the application
+        >>> Send json with the planes to geojson part of the application
     """
     
     
@@ -43,11 +43,13 @@ def handle_command(data):
         response = P_API.get_bbox_call(bbox)
         if response is not None:
             states = response.states
-            gp1_planes = P_API.generate_multiple_json(states[:10]) 
-        
+            #gp1_planes = P_API.generate_multiple_json(states[:1000]) "We put a certain limitation --> why ? "
+            gp1_planes = P_API.generate_multiple_json(states)
             print(gp1_planes)
+            return gp1_planes
         else:
             print("No planes found in this area.")
+            return None
 
 async def echo(websocket, path):
     """
@@ -55,23 +57,18 @@ async def echo(websocket, path):
 
         This function listens for messages from the WebSocket connection, attempts to
         parse each message as JSON, and then processes the parsed data using the 
-        `handle_command` function. If the message is not a valid JSON, it logs an 
-        error and continues listening for the next message. After processing, it sends
-        a response back to the client.
+        `handle_command` function. It then sends the resulting data back to the client.
 
         Parameters:
         websocket (WebSocket): The WebSocket connection object through which messages are received and sent.
         path (str): The path of the WebSocket endpoint, used for routing (not used in this implementation).
 
         Returns:
-        None: This function does not return a value; it operates via side effects 
-            (processing messages and sending responses).
+        None
     """
     
     
     async for message in websocket:
-        # print(f"Received: {message}")
-        
         # convert message to json
         try:
             json_message = json.loads(message)
@@ -80,10 +77,14 @@ async def echo(websocket, path):
             print("Error: The message is not a valid JSON")
             continue
         
-        # handle the data
-        handle_command(json_message)
+        # handle the data and get response data
+        response_data = handle_command(json_message)
         
-        await websocket.send("Hello from Python WebSocket Server!")
+        # Send the planes data back to the frontend if response_data exists
+        if response_data:
+            await websocket.send(json.dumps(response_data))
+        else:
+            await websocket.send("No data available for the given command.")
 
 # Start the server
 start_server = websockets.serve(echo, "localhost", 65432)
