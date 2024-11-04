@@ -1,5 +1,6 @@
 # TN512-CC: Command and Control
-
+## TO DO
+- Make sure that only each dt an API-call is performed, such that the server is not overloaded.
 
 ## Scheme of the C&C app
 
