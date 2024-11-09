@@ -95,8 +95,12 @@ class Plane_API():
             list or None: A list of states within the bounding box if found; otherwise, returns None.
         """
         
+        if type(bbox) == tuple:
+            target = bbox
+        else:
+            target = self.get_bbox_tuple(bbox)
         
-        states = self.api.get_states(bbox=self.get_bbox_tuple(bbox))
+        states = self.api.get_states(bbox=target)
         
         if states is None:
             return None
