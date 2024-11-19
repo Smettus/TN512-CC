@@ -2,9 +2,10 @@ from django.db import models
 
 # Create your models here.
 class Tutorial(models.Model):
+    
     entity_id = models.IntegerField()
-    latitude = models.FloatField(),
-    longitude = models.FloatField(),
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     enemy = models.BooleanField()
     time_position = models.DateTimeField()
     geo_altitude = models.IntegerField()

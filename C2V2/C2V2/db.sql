@@ -54,3 +54,4 @@ CREATE TABLE user (
     role VARCHAR(255),
     FOREIGN KEY (entity_id) REFERENCES entities(entity_id) ON DELETE CASCADE
 );
+
