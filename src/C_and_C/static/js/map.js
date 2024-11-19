@@ -1,27 +1,67 @@
 // Setup the map
+// todo get user location
 var map = L.map('map', {
     center: [50.8446, 4.3933],
     zoom: 13,
     zoomcontrol: true
 }) //.setView([50.8446, 4.3933], 13);
-
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
-
+osmLayer.addTo(map); // be sure to load some layer
 var satelliteLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 });
-
-osmLayer.addTo(map);
+var darkmodeLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: ['a', 'b', 'c'],
+    maxZoom: 19
+})
 
 //      - Layer control
 var baseLayers = {
     "OpenStreetMap": osmLayer,
-    "Satellite": satelliteLayer
+    "OSM - Dark": darkmodeLayer,
+    "Satellite": satelliteLayer,
 };
 L.control.layers(baseLayers).addTo(map);
 
+
+// container for address search results
+const addressSearchResults = new L.LayerGroup().addTo(map);
+
+/*** Geocoder ***/
+// OSM Geocoder
+const osmGeocoder = new L.Control.geocoder({
+    collapsed: false,
+    position: 'topright',
+    text: 'Address Search',
+    placeholder: 'Enter street address',
+   defaultMarkGeocode: false
+}).addTo(map);    
+
+// handle geocoding result event
+osmGeocoder.on('markgeocode', e => {
+   // to review result object
+   console.log(e);
+   // coordinates for result
+   const coords = [e.geocode.center.lat, e.geocode.center.lng];
+   // center map on result
+   map.setView(coords, 16);
+   // popup for location
+   // todo: use custom icon
+   const resultMarker = L.marker(coords).addTo(map);
+   // add popup to marker with result text
+   resultMarker.bindPopup(e.geocode.name).openPopup();
+});
+
+
+
+
+
+
+
+// <!----------------- API Handling -----------------!>
 // Function to initially connect to the back end server
 // Tableau pour stocker les marqueurs d'avion
 let planeMarkers = [];

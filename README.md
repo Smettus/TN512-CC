@@ -4,81 +4,41 @@
 
 ## Scheme of the C&C app
 
+## Backend - Client server
+The backend server has been ported to the Django framework. As always, make sure to install the necessary dependencies in your python virtual environment:
+$$$
+ip install -r requirements.txt
+$$$
+
+Running the server is as easy as:
+$$$
+cd src/
+python manage.py runserver
+$$$
+
+### Multithreading
+Already handled by the Django framework. However useful
+
+### User accounts
+A basic Django login/logout system was introduced. The admin can manage the accounts from 'http://127.0.0.1:8000/admin'.
+
+Under the Django app 'accounts', the routing system can be viewed. To view the html of the pages, see 'my_project/templates/accounts'.
 
 
+## Frontend
+### Visualization
+TODO:
+- Nicer pages all round (login/logout, base page)
+- map.html: search box for location
+    - make the body black, to have it black when no tiles are there.
+    - make search bar cleaner (maybe a css option already, not leaflet.js)
 
-## Frontend - Visualization
-In `visualizeOSM >`, you can find a basic_html page, but also a more scalable React.js application.
-
-For the basic html, cd into the basic_html and run:
-```
-python -m http.server 8000
-```
-This is just to test run the file.
-
+### Speedups:
+1. Upon load, the user needs to fetch the leaflet.js. This takes time. Can we store it in the user session locally?
+$$$html
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+$$$
+-> base to solution is in comment in the flight_map.html. No, localstorage probably too small. use service workers?
 
 
-
-
-## Backend - Server
-The backend server will handle the API calls requested by the web application. It uses a python websocket to establish the connection with the webapp. The server is currently running on `localhost:65432`. 
-
-### Current State
-- It is now possible to hover to a desired region on the webb application and to send `bbox` to the backend server in JSON format. 
-- The server will conduct an API call of the desired bbox and return a list of planes in the JSON format mentioned in `Example JSON/`.
-
-### Installation
-#### API_c2c.py
-This file contains the `python` classes for each different API call type: Planes, Ground Troops and Ships. To use this class one should install **OpenSkyApi**. Follow the installation process from their github: [OpenSkyApi](https://github.com/openskynetwork/opensky-api).
-
-#### BackEnd_server.py
-Next these Packages are needed for the server:
-```python
-import base64
-import json
-from datetime import datetime
-import asyncio
-import websockets
-```
-**Install them in the same environment as the OpenSkyApi.**
-
-#### map.js
-Map.js will send a request to the backend server to get all the planes in the desired area. This area is the visible part of the map on the sceren!
-
-It will send a JSON file as request witht he following format.
-```
-{
-    'command': String of the desired command: POST, GET, QUIT, INTERACTIVE ,
-    'data': bbox of the area
-}
-```
-
-Example: 
-```
-{
-    'command': 'GET', 
-    'data': {'southwest': {'lat': 50.810382245925, 'lng': 4.283638000488282}, 'northwest': {'lat': 50.9137489045753, 'lng': 4.283638000488282}, 'northeast': {'lat': 50.9137489045753, 'lng': 4.60653305053711}, 'southeast': {'lat': 50.810382245925, 'lng': 4.60653305053711}}
-}
-```
-
-### API Calls
-To acces the API a password and username must be provided. Use the file witht he encrypted password send by me (SaYo). **Save this file in the same directory as** `API_c2c.py`.
-```python
-class Plane_API():
-    def __init__(self) -> None:
-        pw_enc = self.get_password()
-        self.api = OpenSkyApi("SaYo",base64.b64decode(pw_enc).decode("utf-8"))
-```
-
-### Running the server 
-To launch the server run the following line in a python environment.
-```
-python BackEnd_server.py
-```
-**This must be ran isnide the directory where you saved `BackEnd_server.py`!**
-
-If you haven't already started the web application, you can launch it with the following command. Else refresh the page to conenct to the server. 
-```
-python -m http.server 8000
-```
-**This must be ran inside the `basic_html` folder!**

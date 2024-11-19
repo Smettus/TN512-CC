@@ -9,10 +9,18 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-
+    <link rel="icon" href="{% static 'icons/nec.ico' %}" type="image/x-icon">
+    <!-- Leaflet Search Plugin CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <!-- get it from local -> later <link href="{% static 'Leaflet.AnimatedSearchBox/src/Leaflet.AnimatedSearchBox.css' %}" rel="stylesheet"> -->
 
     <style>
+        /* getting rid of the ugly white borders */
+        body, html { 
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
         #map {
             height: 100vh; /* Full screen height */
             width: 100%;
@@ -129,8 +137,36 @@
         </div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- Leaflet JS - Save it locally for faster load times in beginning -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    {% comment %} <script>
+        // Function to load Leaflet.js from localStorage or CDN
+        function loadLeaflet() {
+            if (!localStorage.getItem('leafletLoaded')) {
+                // If Leaflet.js isn't in localStorage, fetch it from the CDN
+                var script = document.createElement('script');
+                script.src = "https://unpkg.com/leaflet/dist/leaflet.js";
+                script.onload = function() {
+                    // After loading, store it in localStorage
+                    localStorage.setItem('leafletLoaded', true);
+                };
+                document.head.appendChild(script);
+            } else {
+                // If it's already cached, load it from localStorage
+                var script = document.createElement('script');
+                script.src = "https://unpkg.com/leaflet/dist/leaflet.js";
+                document.head.appendChild(script);
+            }
+        }
+
+        // Call the function to load Leaflet.js
+        loadLeaflet();
+    </script> {% endcomment %}
+    
+
+    <!-- Leaflet Search Plugin JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <!-- Link to the external JavaScript file -->
     <script src="{% static 'js/map.js' %}"></script>
 
