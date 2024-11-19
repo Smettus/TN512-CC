@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'C_and_C',
+    'accounts',
+    #'rest_framework',
+    #'rest_framework_simplejwt', # later, jwt authentication
 ]
 
 MIDDLEWARE = [
@@ -99,6 +102,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Login/Logout
+LOGIN_URL = 'accounts/login/'        # Redirect here if not logged in
+LOGIN_REDIRECT_URL = '/'     # Redirect here after login
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect here after logout
 
 
 # Internationalization
