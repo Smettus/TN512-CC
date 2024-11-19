@@ -26,6 +26,78 @@ L.control.layers(baseLayers).addTo(map);
 // Tableau pour stocker les marqueurs d'avion
 let planeMarkers = [];
 
+// Upon map move -> api call
+function getBoundingBox() {
+    var bounds = map.getBounds();
+    return {
+        southwest: bounds.getSouthWest(),
+        northwest: { lat: bounds.getNorthEast().lat, lng: bounds.getSouthWest().lng },
+        northeast: bounds.getNorthEast(),
+        southeast: { lat: bounds.getSouthWest().lat, lng: bounds.getNorthEast().lng }
+    };
+}
+
+// Fetch plane data from the backend
+async function fetchPlaneData() {
+    var bbox = getBoundingBox();
+
+    // Prepare the request payload
+    var payload = {
+        southwest: { lat: bbox.southwest.lat, lng: bbox.southwest.lng },
+        northeast: { lat: bbox.northeast.lat, lng: bbox.northeast.lng }
+    };
+
+    try {
+        // Send POST request to the backend
+        const response = await fetch('/planes_query/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Parse the response
+        if (response.ok) {
+            const planes = await response.json();
+            updatePlaneMarkers(planes);
+        } else {
+            console.error('Failed to fetch plane data:', response.status, response.statusText);
+        }
+    } catch (error) {
+        console.error('Error fetching plane data:', error);
+    }
+}
+
+// Update the markers on the map based on the fetched data
+function updatePlaneMarkers(planes) {
+    // Remove old markers
+    planeMarkers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    planeMarkers = [];
+
+    // Add new markers
+    planes.forEach(plane => {
+        const { lat, lon, altitude, call_sign } = plane;
+
+        if (lat && lon) {
+            const marker = L.marker([lat, lon]).addTo(map).bindPopup(`
+                <div>
+                    <p><b>Call Sign:</b> ${call_sign}</p>
+                    <p><b>Altitude:</b> ${altitude}</p>
+                </div>
+            `);
+            planeMarkers.push(marker);
+        }
+    });
+}
+
+// Call fetchPositions each time the map is moved
+map.on('moveend', fetchPlaneData());
+// Call fetchPositions every 5 seconds
+setInterval(fetchPlaneData, 5000);
+
 /*
  function connectSocket(s) {
     s.addEventListener('open', function (event) {
@@ -135,17 +207,7 @@ let planeMarkers = [];
 }
 */
 
-// Upon map move -> api call
-function getBoundingBox() {
-    var bounds = map.getBounds();
-    return {
-        southwest: bounds.getSouthWest(),
-        northwest: { lat: bounds.getNorthEast().lat, lng: bounds.getSouthWest().lng },
-        northeast: bounds.getNorthEast(),
-        southeast: { lat: bounds.getSouthWest().lat, lng: bounds.getNorthEast().lng }
-    };
-}
-
+/*
 // Function to convert the bbox to with command to a json
 function createJson(data_input, command = 'GET') {
     const result = {
@@ -155,6 +217,7 @@ function createJson(data_input, command = 'GET') {
 
     return JSON.stringify(result);
 }
+*/
 
 /*
 // Create a WebSocket client

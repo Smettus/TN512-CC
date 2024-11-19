@@ -1,4 +1,5 @@
 /BackEnd_Server/secret.txt
 /BackEnd_Server/__pycache__/
-/.env/
-/.idea/
+/DB_Api/C2V2/.env/
+/Website_server/.env/
+/Website_server/.idea/
