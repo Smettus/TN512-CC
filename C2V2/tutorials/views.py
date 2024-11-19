@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET', 'POST', 'DELETE'])
 def tutorial_list(request):
+    print(request.method)
     # GET list of tutorials, POST a new tutorial, DELETE all tutorials
     if request.method == 'GET':
         tutorials = Tutorial.objects.all()
