@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
- 
+
+import json
+
 from tutorials.models import Tutorial,Entities
 from tutorials.serializers import TutorialSerializer
 from rest_framework.decorators import api_view
@@ -11,7 +13,8 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET', 'POST', 'DELETE'])
 def tutorial_list(request):
-    print(request.method)
+
+    
     # GET list of tutorials, POST a new tutorial, DELETE all tutorials
     if request.method == 'GET':
         tutorials = Tutorial.objects.all()
@@ -26,10 +29,11 @@ def tutorial_list(request):
     # 'safe=False' for objects serialization    
     elif request.method == 'POST':
         # Directly access the parsed request data using DRF's request.data
-        plane_data = request.data  # DRF automatically handles JSON parsing
-        
+        plane_data = request.data.get('Properties', None)  # DRF automatically handles JSON parsing
+        print(plane_data)
         # Ensure the entity_id exists in the request data
         entity_id = plane_data.get('entity_id')
+        
         if not entity_id:
             # If entity_id is missing, return an error
             return Response({'error': 'entity_id is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -37,7 +41,7 @@ def tutorial_list(request):
         # Check if the entity already exists in the entities table, or create it if not
         entity, created = Entities.objects.get_or_create(
             entity_id=entity_id,  # Match on the entity_id in the Entities table
-            defaults={'name': 'Default Name', 'type': 'Plane'}  # Default values if the entity is created
+            defaults={'name': plane_data.get('call_sign'), 'type': 'Plane'}  # Default values if the entity is created
         )
         
         # Update the plane_data with the correct entity_id if needed
