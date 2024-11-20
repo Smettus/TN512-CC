@@ -7,7 +7,7 @@ class Tutorial(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     enemy = models.IntegerField()
-    time_position = models.CharField(max_length=255)
+    time_position = models.DateTimeField(max_length=255)
     geo_altitude = models.FloatField()
     velocity = models.FloatField()
     true_track = models.FloatField()

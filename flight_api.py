@@ -13,7 +13,7 @@ DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Dja
 
 def send_to_django(data,id):
     """Send plane data to Django server via a POST request."""
-
+    data['Properties']["entity_id"]  =175
     try:
         response = requests.post(DJANGO_SERVER_URL, json=data)  # POST request with JSON payload
         if response.status_code == 201:

@@ -134,7 +134,7 @@ class Plane_API():
         
         
         # Convert UNIX time to ISO 8601 format (UTC)
-        time_position_iso = datetime.utcfromtimestamp(data.time_position).isoformat('T')
+        time_position_iso = datetime.utcfromtimestamp(data.time_position).isoformat('Z')
         json_object = {
             "Type": "Plane",  # As per the example, this is fixed Will change for other type of objects
             "Properties": {

@@ -30,8 +30,9 @@ def tutorial_list(request):
     elif request.method == 'POST':
         # Directly access the parsed request data using DRF's request.data
         plane_data = request.data.get('Properties', None)  # DRF automatically handles JSON parsing
-        print(plane_data)
+
         # Ensure the entity_id exists in the request data
+        
         entity_id = plane_data.get('entity_id')
         
         if not entity_id:
@@ -46,10 +47,8 @@ def tutorial_list(request):
         
         # Update the plane_data with the correct entity_id if needed
         plane_data['entity_id'] = entity.entity_id
-        
         # Serialize the incoming plane data
         tutorial_serializer = TutorialSerializer(data=plane_data)
-        
         # Check if the serialized data is valid
         if tutorial_serializer.is_valid():
             # Save the valid data to the database
