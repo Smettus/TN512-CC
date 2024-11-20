@@ -138,15 +138,16 @@ class Plane_API():
         json_object = {
             "Type": "Plane",  # As per the example, this is fixed Will change for other type of objects
             "Properties": {
-                "entity_id":None,
+                "entry_id":None,
+                "entity_id": int(data.icao24,16),
                 "latitude": data.latitude,
                 "longitude": data.longitude,
                 "enemy": 0,  # Assuming False unless there's a reason to change it
                 "time_position": time_position_iso,
-                "geo_altitude": data.geo_altitude,
+                "geo_altitude": data.geo_altitude if data.geo_altitude != None else -1,
                 "velocity": data.velocity,
                 "true_track": data.true_track,
-                "call_sign": data.callsign.split()[0] if len(data.callsign) != 0 else "0",
+                "call_sign": data.callsign.split()[0] if data.callsign != '' else "0", # Note that the call sign is not the call sign receiveed from the API but the ICAO24 id!!!!!!!!!!!!!!
                 "origin_country": data.origin_country ,
                 "on_ground": 0 if data.on_ground else 1,
                 "category": data.category,

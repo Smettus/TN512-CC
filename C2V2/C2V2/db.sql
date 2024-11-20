@@ -13,6 +13,7 @@ CREATE TABLE entities (
 -- Step 3: Plane Table with JSON Fields
 CREATE TABLE plane (
     plane_id INT AUTO_INCREMENT PRIMARY KEY,
+    entry_id INT,
     entity_id INT NOT NULL,
     latitude FLOAT,  -- For "Latitude"
     longitude FLOAT, -- For "Longitude"
@@ -32,6 +33,7 @@ CREATE TABLE plane (
 -- Step 4: Example Tables for Ship, LandForce, User
 CREATE TABLE ship (
     ship_id INT AUTO_INCREMENT PRIMARY KEY,
+    entry_id INT,
     entity_id INT NOT NULL,
     ship_name VARCHAR(255),
     ship_type VARCHAR(255),
@@ -41,6 +43,7 @@ CREATE TABLE ship (
 
 CREATE TABLE landforce (
     landforce_id INT AUTO_INCREMENT PRIMARY KEY,
+    entry_id INT,
     entity_id INT NOT NULL,
     unit_name VARCHAR(255),
     unit_size INT,
