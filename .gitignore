@@ -3,3 +3,10 @@
 /DB_Api/C2V2/.env/
 /Website_server/.env/
 /Website_server/.idea/
+secret.txt
+__pycache__/
+.idea/
+C2V2/C2V2/__pycache__/
+C2V2/tutorials/__pycache__/
+C2V2/tutorials/migrations/__pycache__/
+C2V2/__pycache__/
