@@ -13,3 +13,4 @@ C2V2/__pycache__/
 DB_Api/C2V2/tutorials/__pycache__/
 DB_Api/C2V2/C2V2/__pycache__/
 DB_Api/C2V2/C2V2/__pycache__
+*.pyc
