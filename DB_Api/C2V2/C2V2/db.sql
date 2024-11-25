@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS C2;
 USE C2;
 
 -- Step 2: General Entities Table
-CREATE TABLE entities (
+CREATE TABLE IF NOT EXISTS entities (
     entity_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     type ENUM('Plane', 'Ship', 'LandForce', 'User') NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE entities (
 );
 
 -- Step 3: Plane Table with JSON Fields
-CREATE TABLE plane (
+CREATE TABLE IF NOT EXISTS plane (
     plane_id INT AUTO_INCREMENT PRIMARY KEY,
     entry_id INT,
     entity_id INT NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE plane (
 );
 
 -- Step 4: Example Tables for Ship, LandForce, User
-CREATE TABLE ship (
+CREATE TABLE IF NOT EXISTS ship (
     ship_id INT AUTO_INCREMENT PRIMARY KEY,
     entry_id INT,
     entity_id INT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE ship (
     FOREIGN KEY (entity_id) REFERENCES entities(entity_id) ON DELETE CASCADE
 );
 
-CREATE TABLE landforce (
+CREATE TABLE IF NOT EXISTS landforce (
     landforce_id INT AUTO_INCREMENT PRIMARY KEY,
     entry_id INT,
     entity_id INT NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE landforce (
     FOREIGN KEY (entity_id) REFERENCES entities(entity_id) ON DELETE CASCADE
 );
 
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     entity_id INT NOT NULL,
     username VARCHAR(255),
