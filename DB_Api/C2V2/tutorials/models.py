@@ -1,13 +1,14 @@
 from django.db import models
 
 # Create your models here.
-class Tutorial(models.Model):
-    
+class Plane(models.Model):
+    plane_id = models.AutoField(primary_key=True)
+    entry_id = models.IntegerField()
     entity_id = models.IntegerField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     enemy = models.IntegerField()
-    time_position = models.DateTimeField()
+    time_position = models.DateTimeField(max_length=255)
     geo_altitude = models.FloatField()
     velocity = models.FloatField()
     true_track = models.FloatField()
@@ -37,3 +38,23 @@ class Entities(models.Model):
     class Meta:
         db_table = 'entities'  # Explicitly specifies the database table name
 
+class Ship(models.Model):
+    ship_id = models.AutoField(primary_key=True)
+    entry_id = models.IntegerField()
+    entity = models.ForeignKey(Entities, models.DO_NOTHING)
+    ship_name = models.CharField(max_length=255, blank=True, null=True)
+    ship_type = models.CharField(max_length=255, blank=True, null=True)
+    displacement = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'ship'
+        
+class Landforce(models.Model):
+    landforce_id = models.AutoField(primary_key=True)
+    entry_id = models.IntegerField()
+    entity = models.ForeignKey(Entities, models.DO_NOTHING)
+    unit_name = models.CharField(max_length=255, blank=True, null=True)
+    unit_size = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'landforce'

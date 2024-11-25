@@ -1,12 +1,13 @@
 from rest_framework import serializers 
-from tutorials.models import Tutorial
+from tutorials.models import Plane
  
  
-class TutorialSerializer(serializers.ModelSerializer):
+class PlaneSerializer(serializers.ModelSerializer):
  
     class Meta:
-        model = Tutorial
-        fields = ('entity_id',
+        model = Plane
+        fields = ('entry_id',
+                'entity_id',
                 'latitude',
                 'longitude',
                 'enemy',

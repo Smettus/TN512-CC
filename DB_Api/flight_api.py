@@ -16,7 +16,7 @@ def send_to_django(data,id):
     """Send plane data to Django server via a POST request."""
     
     data['Properties']["entry_id"] = id 
-    print(data['Properties'])
+    #(data['Properties'])
     try:
         response = requests.post(DJANGO_SERVER_URL, json=data)  # POST request with JSON payload
         if response.status_code == 201:
