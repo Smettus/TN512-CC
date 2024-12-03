@@ -3,3 +3,6 @@
 /DB_Api/C2V2/.env/
 /Website_server/.env/
 /Website_server/.idea/
+/Website_server/src/C_and_C/__pycache__/
+/Website_server/src/C_and_C/migrations/__pycache__/
+/Website_server/src/my_project/__pycache__/
