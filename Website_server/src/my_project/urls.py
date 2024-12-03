@@ -20,8 +20,9 @@ from django.urls import path, include
 from .views import home
 
 urlpatterns = [
-    path('C_and_C/', include("C_and_C.urls")),
-    path('planes_query/', include("planes_query.urls")),
-    path('', home, name="home"),
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),  # Include accounts URLs
+    #path("accounts/", include("django.contrib.auth.urls")), # future
+    path('', home, name="home"),
+    path('C_and_C/', include("C_and_C.urls")),
 ]

@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'C_and_C',
+    'accounts',
+    #'rest_framework',
+    #'rest_framework_simplejwt', # later, jwt authentication
 ]
 
 MIDDLEWARE = [
@@ -76,12 +79,8 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'C2',
-        'USER': 'saboyouneskms',
-        'PASSWORD': 'Meeslovers175!',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -104,6 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Login/Logout
+LOGIN_URL = 'accounts/login/'        # Redirect here if not logged in
+LOGIN_REDIRECT_URL = '/'     # Redirect here after login
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect here after logout
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -122,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "C_AND_C/static")
+    os.path.join(BASE_DIR, "C_and_C/static")
 ]
 
 # Default primary key field type
