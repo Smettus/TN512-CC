@@ -4,3 +4,5 @@ secret.txt
 /Website_server/.env/
 /Website_server/.idea/
 __pycache__/
+*.py[cod]
+*.pyo

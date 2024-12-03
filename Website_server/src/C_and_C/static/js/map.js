@@ -186,15 +186,83 @@ function getBoundingBox() {
     };
 }
 
-// Function to convert the bbox to with command to a json
-function createJson(data_input, command = 'GET') {
-    const result = {
-        command: command,
-        data: data_input
+let isFetching = false;
+
+// Fetch plane data from the backend
+async function fetchPlaneData() {
+    var bbox = getBoundingBox();
+
+    // Prepare the request payload
+    var payload = {
+        southwest: { lat: bbox.southwest.lat, lng: bbox.southwest.lng },
+        northeast: { lat: bbox.northeast.lat, lng: bbox.northeast.lng }
     };
 
-    return JSON.stringify(result);
+    if (isFetching) return; // Prevent overlapping calls
+    isFetching = true;
+
+    try {
+        // Send GET request to the backend
+        const response = await fetch('/planes_query/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Optional for GET but doesn't hurt
+            }
+        });
+    
+        // Check the response status
+        if (!response.ok) {
+            console.error('Failed to fetch plane data:', response.status, response.statusText);
+            return; // Stop execution here to avoid further processing
+        }
+    
+        // Ensure the response body is read only once
+        
+        const planes = await response.json();
+        console.log(planes)
+        console.log(typeof(planes))
+        // Process the data (update map markers)
+        updatePlaneMarkers(JSON.parse(planes));
+    } catch (error) {
+        console.error('Error fetching plane data:', error);
+    } finally {
+        isFetching = false; // Allow new requests
+    }
+    
 }
+
+// Update the markers on the map based on the fetched data
+function updatePlaneMarkers(planes) {
+    // Remove old markers
+    planeMarkers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    planeMarkers = [];
+
+    // Add new markers
+    planes.forEach(plane => {
+        const { lat, lon, altitude, call_sign } = plane;
+
+        if (lat && lon) {
+            const marker = L.marker([lat, lon]).addTo(map).bindPopup(`
+                <div>
+                    <p><b>Call Sign:</b> ${call_sign}</p>
+                    <p><b>Altitude:</b> ${altitude}</p>
+                </div>
+            `);
+            planeMarkers.push(marker);
+        }
+    });
+}
+
+// Call fetchPositions each time the map is moved
+let debounceTimer;
+map.on('moveend', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchPlaneData, 500); // Prevent overlapping calls
+});
+// Call fetchPositions every 5 seconds
+setInterval(fetchPlaneData, 5000);
 
 /*
 // Create a WebSocket client
