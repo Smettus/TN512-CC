@@ -17,16 +17,15 @@ def tutorial_list(request):
     retriever = Retriever()
     # GET list of Plane, POST a new Plane, DELETE all Plane
     if request.method == 'GET':
-        
         # CHECK TYPE OF GET REQUEST
-        if request.data.get('Type', None) == "Latest_all":
+        if request.GET.get('Type', None) == "Latest_all":
             latest_planes = retriever.get_latest(Plane,"Plane")
             # latest_ships = retriever.get_latest( <Ship Model> )
             # latest_ground = retriever.get_latest( <Ground Model> )
 
             # Create list of all the sub lists
             latest_all = latest_planes
-            return JsonResponse(latest_all, safe=False)
+            return JsonResponse(latest_all,safe = False)
         
     
     elif request.method == 'POST':
@@ -51,7 +50,6 @@ def tutorial_detail(request, pk):
  
     # GET / PUT / DELETE Plane
     if request.method == 'GET': 
-        print("Now here")
         Plane_serializer = PlaneSerializer(Plane) 
         return JsonResponse(Plane_serializer.data) 
    

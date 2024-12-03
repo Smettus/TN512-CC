@@ -37,6 +37,8 @@ function getBoundingBox() {
     };
 }
 
+let isFetching = false;
+
 // Fetch plane data from the backend
 async function fetchPlaneData() {
     var bbox = getBoundingBox();
@@ -47,26 +49,37 @@ async function fetchPlaneData() {
         northeast: { lat: bbox.northeast.lat, lng: bbox.northeast.lng }
     };
 
-    try {
-        // Send POST request to the backend
-        const response = await fetch('/planes_query/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+    if (isFetching) return; // Prevent overlapping calls
+    isFetching = true;
 
-        // Parse the response
-        if (response.ok) {
-            const planes = await response.json();
-            updatePlaneMarkers(planes);
-        } else {
+    try {
+        // Send GET request to the backend
+        const response = await fetch('/planes_query/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json', // Optional for GET but doesn't hurt
+            }
+        });
+    
+        // Check the response status
+        if (!response.ok) {
             console.error('Failed to fetch plane data:', response.status, response.statusText);
+            return; // Stop execution here to avoid further processing
         }
+    
+        // Ensure the response body is read only once
+        
+        const planes = await response.json();
+        console.log(planes)
+        console.log(typeof(planes))
+        // Process the data (update map markers)
+        updatePlaneMarkers(JSON.parse(planes));
     } catch (error) {
         console.error('Error fetching plane data:', error);
+    } finally {
+        isFetching = false; // Allow new requests
     }
+    
 }
 
 // Update the markers on the map based on the fetched data
@@ -94,7 +107,11 @@ function updatePlaneMarkers(planes) {
 }
 
 // Call fetchPositions each time the map is moved
-map.on('moveend', fetchPlaneData());
+let debounceTimer;
+map.on('moveend', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchPlaneData, 500); // Prevent overlapping calls
+});
 // Call fetchPositions every 5 seconds
 setInterval(fetchPlaneData, 5000);
 
