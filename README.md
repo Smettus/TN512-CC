@@ -1,84 +1,58 @@
 # TN512-CC: Command and Control
-## TO DO
-- Make sure that only each dt an API-call is performed, such that the server is not overloaded.
-
-## Scheme of the C&C app
+Make an environment for each part using the requirement.txt files
 
 
+# Run DB server
+## Configure to own machine
+Configure the database with your own useraccount. Make sure that mysql is installed.
 
-
-## Frontend - Visualization
-In `visualizeOSM >`, you can find a basic_html page, but also a more scalable React.js application.
-
-For the basic html, cd into the basic_html and run:
+- In `DB_Api\C2V2\manage.py`:
+```py
+    def run_sql_file():
+    db_user = 'USERNAME'
+    db_password = 'PASSWORD'
+    db_host = '127.0.0.1'  # or your MySQL server address
+    sql_file_path = './C2V2/db.sql'
+    # Connect to MySQL without specifying a database
+    connection = pymysql.connect(
+        user=db_user,
+        password=db_password,
+        host=db_host
+    )
+    cursor = connection.cursor()
 ```
-python -m http.server 8000
-```
-This is just to test run the file.
-
-
-
-
-
-## Backend - Server
-The backend server will handle the API calls requested by the web application. It uses a python websocket to establish the connection with the webapp. The server is currently running on `localhost:65432`. 
-
-### Current State
-- It is now possible to hover to a desired region on the webb application and to send `bbox` to the backend server in JSON format. 
-- The server will conduct an API call of the desired bbox and return a list of planes in the JSON format mentioned in `Example JSON/`.
-
-### Installation
-#### API_c2c.py
-This file contains the `python` classes for each different API call type: Planes, Ground Troops and Ships. To use this class one should install **OpenSkyApi**. Follow the installation process from their github: [OpenSkyApi](https://github.com/openskynetwork/opensky-api).
-
-#### BackEnd_server.py
-Next these Packages are needed for the server:
-```python
-import base64
-import json
-from datetime import datetime
-import asyncio
-import websockets
-```
-**Install them in the same environment as the OpenSkyApi.**
-
-#### map.js
-Map.js will send a request to the backend server to get all the planes in the desired area. This area is the visible part of the map on the sceren!
-
-It will send a JSON file as request witht he following format.
-```
-{
-    'command': String of the desired command: POST, GET, QUIT, INTERACTIVE ,
-    'data': bbox of the area
-}
+- In `DB_Api\C2V2\C2V2\settings.py`
+```py
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'C2',
+            'USER': 'USERNAME',
+            'PASSWORD': 'PASSWORD',
+            'HOST': '127.0.0.1',
+            'PORT': '8080',
+        }
+    }
 ```
 
-Example: 
-```
-{
-    'command': 'GET', 
-    'data': {'southwest': {'lat': 50.810382245925, 'lng': 4.283638000488282}, 'northwest': {'lat': 50.9137489045753, 'lng': 4.283638000488282}, 'northeast': {'lat': 50.9137489045753, 'lng': 4.60653305053711}, 'southeast': {'lat': 50.810382245925, 'lng': 4.60653305053711}}
-}
-```
+## Launching the parts
+Open an Anaconda prompt in this location: `..\TN512-CC\DB_Api\C2V2`. 
 
-### API Calls
-To acces the API a password and username must be provided. Use the file witht he encrypted password send by me (SaYo). **Save this file in the same directory as** `API_c2c.py`.
-```python
-class Plane_API():
-    def __init__(self) -> None:
-        pw_enc = self.get_password()
-        self.api = OpenSkyApi("SaYo",base64.b64decode(pw_enc).decode("utf-8"))
-```
+Now run the server with the following command: `python manage.py runserver 8080`
 
-### Running the server 
-To launch the server run the following line in a python environment.
-```
-python BackEnd_server.py
-```
-**This must be ran isnide the directory where you saved `BackEnd_server.py`!**
+This runs the database on the localmachine on port 8080.
 
-If you haven't already started the web application, you can launch it with the following command. Else refresh the page to conenct to the server. 
-```
-python -m http.server 8000
-```
-**This must be ran inside the `basic_html` folder!**
+# Run flight_api.py
+Open an Anaconda prompt with the environment corresponding to the flight api. Be in this location: `..\TN512-CC\DB_Api\`
+
+Run the following command: `python flight_api.py`
+
+# Run Website
+Open a new Anaconda prompt and activate the environment for the website. Go to this location: `..\TN512-CC\Website_server\src\manage.py`.
+
+Run the following command to run the website: `python manage.py runserver`
+
+# DISCLAIMER
+It might be possible that you will have problems running the database server. This might be due to the fact that mysql is not installed on your machine. 
+
+Download is from this site: https://www.mysql.com/fr/downloads/
