@@ -8,7 +8,7 @@ from random import randrange
 P_API = Plane_API()
 ENTRIES = 0
 # Bounding box for the area of interest
-BBOX = (-31.5, 34.5, 39.5, 71.2)
+BBOX = (49.5294835476, 51.4750237087,2.51357303225, 6.15665815596)
 # Django server URL (replace with your actual Django server URL)
 DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Django API
 
