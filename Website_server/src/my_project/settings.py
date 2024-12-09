@@ -107,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL = 'accounts/login/'        # Redirect here if not logged in
 LOGIN_REDIRECT_URL = '/'     # Redirect here after login
 LOGOUT_REDIRECT_URL = '/login/'  # Redirect here after logout
+AUTH_USER_MODEL = 'auth.User' # use the default user model, but extend it with models.py.
+
 
 
 # Internationalization
