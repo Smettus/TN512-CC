@@ -85,6 +85,31 @@ class Retriever():
 
         return res
     
+    def is_in_bbox(self,lat, lng, bbox):
+        sw_lng, sw_lat, ne_lng, ne_lat = bbox
+    
+        # Check if the latitude and longitude are within the bounding box
+        return (sw_lat <= lat <= ne_lat) and (sw_lng <= lng <= ne_lng)
+
+    def get_in_bbox(self,model,type,bbox):
+        # get latest entry_id
+        entries = model.objects.order_by("-entry_id")
+        latest_entry_id = entries[0].entry_id
+        
+        # get list with all planes that have this entry id 
+        filtered_entries = entries.filter(entry_id__exact = latest_entry_id)
+        in_bbox = []
+        
+        for obj in filtered_entries:
+            lat = obj.latitude
+            lon = obj.longitude
+            
+            if self.is_in_bbox(lat,lon,bbox):
+                in_bbox.append(obj)
+        
+        json_entries = self.generate_jsons(in_bbox,type)
+        
+        return json_entries
     
     def get_latest(self,model,type):
         

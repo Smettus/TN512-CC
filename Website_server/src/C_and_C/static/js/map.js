@@ -84,12 +84,13 @@ async function fetchPlaneData() {
     isFetching = true;
 
     try {
-        // Send GET request to the backend
+        // Send POST request to the backend
         const response = await fetch('/planes_query/', {
-            method: 'GET',
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // Optional for GET but doesn't hurt
-            }
+                'Content-Type': 'application/json', // Specify JSON format
+            },
+            body: JSON.stringify(payload) // Include payload as body
         });
     
         // Check the response status

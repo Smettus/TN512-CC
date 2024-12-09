@@ -21,8 +21,8 @@ def main():
     execute_from_command_line(sys.argv)
 
 def run_sql_file():
-    db_user = 'root'
-    db_password = 'Testing321$'
+    db_user = 'saboyouneskms'
+    db_password = 'Meeslovers175!'
     db_host = '127.0.0.1'  # or your MySQL server address
     sql_file_path = './C2V2/db.sql'
     # Connect to MySQL without specifying a database
