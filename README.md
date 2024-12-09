@@ -4,6 +4,23 @@ Make an environment for each part using the requirement.txt files.
 
 ## Backend
 ### Database
+#### Clearing the database
+First you must make sure that the database is correctly configurated. First check if `DB_Api\C2V2\tutorials\migrations` only contains the `__init__.py` file (and also your own `pycache`). If this is not the case, DELETE all migrations files but not `__init__.py`!
+
+Next go to open the `mysql command line client`. Here you use the following commands:
+
+* To start the mysql server: `source "[location to]\DB_Api\C2V2\C2V2\db.sql"`
+* Check if it is correctly loaded: `show databases;` here you must see c2
+* check if your database is empty:
+  * `use c2;`
+  * `show tables;` If this command does not show the tables like: Plane, Entities, etc. You're good and you can go to next section
+* IF YOUR DATABASES DOES CONTAINS THE TABLES planes entitites, etc. you must clear everything:
+  * `SET FOREIGN_KEY_CHECKS = 0;`
+  * `DROP DATABASE c2;`
+  * `CREATE DATABASE c2;`
+  * `SET FOREIGN_KEY_CHECKS = 1;`
+  * THIS CAN ALSO BE DONE JUST TO MAKE SURE THAT YOUR DATABASE IS TOTALY EMPTY
+
 #### Configure to own machine
 Configure the database with your own useraccount. Make sure that mysql is installed.
 
@@ -35,6 +52,32 @@ Configure the database with your own useraccount. Make sure that mysql is instal
         }
     }
 ```
+
+#### Creating the database
+Now that you configured your code to your own machine and that you cleared and started the database server we can generate the tables that we need.
+
+Go to the folder `[location to]\DB_Api\C2V2>` in your python environment and run the following commands. **MAKE SURE THAT YOU DID EVERYTHING FROM THE CLEARING PART ELSE IT IS NOT GOING TO WORK**
+
+* `python manage.py makemigrations`
+* `python manage.py migrate`
+
+Now you can go back to `mysql` and check if your tables are generated using the following codes:
+
+
+
+* To see if all the tables are added: `show tables;`, you must get the following result:
+* 
+![image](https://github.com/user-attachments/assets/659fe2fb-2435-4574-9831-3a4bc1d28e99)
+
+* To see if the plane table is correctly configured: `describe plane;`, you should get this:
+  
+![image](https://github.com/user-attachments/assets/61fa5d99-4dde-4204-a2ef-9180b856cfd1)
+
+**YOU MUST HAVE ALL THE ROWS LIKE HERE OR ELSE THEIR WILL BE ERRORS**
+
+* If you want to see all the entries from a table: `select * from <table_name>`, e.g. `select * from entities`
+
+
 
 #### Launching the parts
 Open an Anaconda prompt in this location: `..\TN512-CC\DB_Api\C2V2`. 
