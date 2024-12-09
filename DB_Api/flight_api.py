@@ -8,7 +8,21 @@ from random import randrange
 P_API = Plane_API()
 ENTRIES = 0
 # Bounding box for the area of interest
-BBOX = (49.5294835476, 51.4750237087,2.51357303225, 6.15665815596)
+BBOX = (49.5294835476, 51.4750237087,2.51357303225, 6.15665815596) 
+"""
+THIS SI HOW THE API HANDLES A BBOX
+OpenSkyApi._check_lat(bbox[0])
+            OpenSkyApi._check_lat(bbox[1])
+            OpenSkyApi._check_lon(bbox[2])
+            OpenSkyApi._check_lon(bbox[3])
+
+            params["lamin"] = bbox[0]
+            params["lamax"] = bbox[1]
+            params["lomin"] = bbox[2]
+            params["lomax"] = bbox[3]
+            
+"""
+
 # Django server URL (replace with your actual Django server URL)
 DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Django API
 
@@ -31,6 +45,7 @@ def send_to_django(data,id):
 def main(): 
     
     while True:
+        print(BBOX)
         # Call the Plane API and get the response with plane states
         response = P_API.get_bbox_call(BBOX)
         if response is not None:

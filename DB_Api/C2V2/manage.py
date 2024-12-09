@@ -8,7 +8,7 @@ import pymysql
 
 def main():
     """Run administrative tasks."""
-    run_sql_file()
+    #run_sql_file()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'C2V2.settings')
     try:
         from django.core.management import execute_from_command_line
