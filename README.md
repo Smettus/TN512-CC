@@ -5,6 +5,9 @@ Make an environment for each part using the requirement.txt files.
 ## Backend
 ### Database
 #### Clearing the database
+
+STEP 0: Make sure that the database `c2` is not open in your `mysql workbench` if you're on windows.  Make also sure that `c2` is also not present in `mysql command line client`. If it is present use this command to delete it: `drop database c2;`
+
 First you must make sure that the database is correctly configurated. First check if `DB_Api\C2V2\tutorials\migrations` only contains the `__init__.py` file (and also your own `pycache`). If this is not the case, DELETE all migrations files but not `__init__.py`!
 
 Next go to open the `mysql command line client`. Here you use the following commands:
