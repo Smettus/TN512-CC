@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS entities (
 -- Step 3: Plane Table with JSON Fields
 CREATE TABLE IF NOT EXISTS plane (
     plane_id INT AUTO_INCREMENT PRIMARY KEY,
+    entry_id INT NOT NULL,
     entity_id INT NOT NULL,
     latitude FLOAT,  -- For "Latitude"
     longitude FLOAT, -- For "Longitude"
