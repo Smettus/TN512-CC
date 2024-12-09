@@ -147,7 +147,7 @@ class Plane_API():
                 "geo_altitude": data.geo_altitude if data.geo_altitude != None else -1,
                 "velocity": data.velocity,
                 "true_track": data.true_track,
-                "call_sign": data.callsign.split()[0] if data.callsign != '' else "0", # Note that the call sign is not the call sign receiveed from the API but the ICAO24 id!!!!!!!!!!!!!!
+                "call_sign": data.callsign.split()[0] if data.callsign.split() else "0", # Note that the call sign is not the call sign receiveed from the API but the ICAO24 id!!!!!!!!!!!!!!
                 "origin_country": data.origin_country ,
                 "on_ground": 0 if data.on_ground else 1,
                 "category": data.category,
