@@ -4,7 +4,7 @@ Make an environment for each part using the requirement.txt files.
 
 ## Backend
 ### Database
-#### Clearing the database
+#### Clearing the database (or just run 'python reset_db.py' to do it automated)
 
 STEP 0: Make sure that the database `c2` is not open in your `mysql workbench` if you're on windows.  Make also sure that `c2` is also not present in `mysql command line client`. If it is present use this command to delete it: `drop database c2;`
 
@@ -23,6 +23,8 @@ Next go to open the `mysql command line client`. Here you use the following comm
   * `CREATE DATABASE c2;`
   * `SET FOREIGN_KEY_CHECKS = 1;`
   * THIS CAN ALSO BE DONE JUST TO MAKE SURE THAT YOUR DATABASE IS TOTALY EMPTY
+
+After this, follow the steps after this.
 
 #### Configure to own machine
 Configure the database with your own useraccount. Make sure that mysql is installed.
