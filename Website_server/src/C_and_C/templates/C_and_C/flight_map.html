@@ -123,7 +123,7 @@
         <!-- Extra buttons that appear on hover -->
         <div class="extra-buttons">
             <!-- Logout Button -->
-            <form method="POST" action="{% url 'logout' %}">
+            <form method="POST" action="{% url 'accounts:logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="tray-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout

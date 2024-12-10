@@ -1,23 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <!-- This is to load static files (see settings.py under static) -->
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/styles_accounts.css' %}">
+    <style>
+        /* error popup message */
+        .message-popup {
+            position: fixed;
+            bottom: -100px; /* Initially hidden below the screen */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 1000;
+            opacity: 0;  /* Hidden until triggered */
+            transition: bottom 0.3s ease, opacity 0.3s ease;  /* Sliding and fading effect */
+        }
+        .message-popup.show {
+            bottom: 20px;  /* Make it visible by sliding up */
+            opacity: 1;  /* Fade in */
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
+    <!-- Display any error or success messages -->
     {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
+        <div id="popupMessage" class="message-popup">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
     {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label>Username:</label>
-        <input type="text" name="username" required><br>
-        <label>Password:</label>
-        <input type="password" name="password" required><br>
-        <button type="submit">Login</button>
-    </form>
-    <a href="{% url 'signup' %}">Don't have an account? Signup here</a>
+    <div class="container">
+        <h2>Login</h2>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        <a href="{% url 'accounts:signup' %}">Don't have an account? Signup here</a>
+    </div>
+
+    <!-- Error message popup -->
+    <script>
+        // Show the popup message if any message is present
+        document.addEventListener('DOMContentLoaded', function() {
+            var popupMessage = document.getElementById('popupMessage');
+            if (popupMessage) {
+                // Show the message with sliding animation
+                popupMessage.classList.add('show');
+
+                // Hide the message after 5 seconds
+                setTimeout(function() {
+                    popupMessage.classList.remove('show');
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>

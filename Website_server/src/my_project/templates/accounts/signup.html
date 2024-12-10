@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- This is to load static files (see settings.py under static) -->
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
+    <link rel="stylesheet" href="{% static 'css/styles_accounts.css' %}">
 </head>
 <body>
-    <h2>Signup</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    <div class="container">
+        <h2>Signup</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-        <label for="password_confirm">Confirm Password:</label>
-        <input type="password" id="password_confirm" name="password_confirm" required><br>
+            <label for="password_confirm">Confirm Password:</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
 
-        <button type="submit">Signup</button>
-    </form>
-    <a href="{% url 'login' %}">Already have an account? Login here</a>
+            <button type="submit">Signup</button>
+        </form>
+        <a href="{% url 'accounts:login' %}">Already have an account? Login here</a>
+    </div>
 </body>
 </html>

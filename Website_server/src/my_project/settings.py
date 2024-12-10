@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'my_project.middleware.CustomLoginRedirectMiddleware', # custom for trying to bypass login
 ]
 
 ROOT_URLCONF = 'my_project.urls'
@@ -104,11 +105,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Login/Logout
-LOGIN_URL = 'accounts/login/'        # Redirect here if not logged in
+LOGIN_URL = '/accounts/login/'        # Redirect here if not logged in: absolute path!!
 LOGIN_REDIRECT_URL = '/'     # Redirect here after login
-LOGOUT_REDIRECT_URL = '/login/'  # Redirect here after logout
+LOGOUT_REDIRECT_URL = '/accounts/login/'  # Redirect here after logout
 AUTH_USER_MODEL = 'auth.User' # use the default user model, but extend it with models.py.
 
+# Message storage - later for not logged in behavior
+#MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
 # Internationalization
@@ -128,7 +131,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "C_and_C/static")
+    os.path.join(BASE_DIR, "C_and_C/static"),
+    os.path.join(BASE_DIR, "accounts/static")
 ]
 
 # Default primary key field type

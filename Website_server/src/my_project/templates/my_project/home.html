@@ -2,10 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C&C map website</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            color: #00bcd4;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            background-color: #00bcd4;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            background-color: #008c99;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .logout-btn:focus {
+            outline: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>C&C map website</h1>
-    <button onclick="window.location.href='{% url 'flight_map' %}'">Flight map</button>
+    <button class="logout-btn" onclick="window.location.href='{% url 'accounts:logout' %}'">Logout</button>
+    <div>
+        <h1>C&C Map Website</h1>
+        <button onclick="window.location.href='{% url 'flight_map' %}'">Flight Map</button>
+    </div>
 </body>
 </html>

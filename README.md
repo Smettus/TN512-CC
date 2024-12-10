@@ -113,14 +113,17 @@ It might be possible that you will have problems running the database server. Th
 Download is from this site: https://www.mysql.com/fr/downloads/
 
 ### User accounts
-A basic Django login/logout system was introduced. The admin can manage the accounts from ‘http://127.0.0.1:8000/admin’. For now, the login
-credentials are admin-admin. 
+Django-based login/logout system was introduced. Upon trying to login, you first need to create an account, after which the account status is waiting to be approved by the administrator. The admin can manage the accounts from ‘http://127.0.0.1:8000/admin’ (credentials are admin-admin for now). A basic account that can be used to access the resources is username 'test' password 'test'. Under user profiles, the admin can manage accounts:
+1) approve accounts
+2) set role (admin, editor, viewer) and an access level
+3) set a special permission flag
+None of them limit anything atm though.
 
 Under the Django app ‘accounts’, the routing system can be viewed. To view the html of the pages, see ‘my_project/templates/accounts’.
 
 TODO:
-- Make that admin can control who has access and who has not
-- Manage what each user can see
+- Make safer login system management
+- Manage what each user can see (any ideas? specific data or something?)
 
 ## Frontend
 ### Visualisation

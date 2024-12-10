@@ -14,7 +14,7 @@ def login_view(request):
         if not request.user.userprofile.is_approved:
             logout(request)
             messages.error(request, "Your account is pending approval. Please contact the admin.")
-            return redirect('login')
+            return redirect('accounts:login')
         return redirect('/')
     
     if request.method == 'POST':
@@ -64,19 +64,17 @@ def signup_view(request):
 
         login(request, user)
         messages.success(request, "Your account has been created, but is awaiting approval.")
-        return redirect('login')
-
-
+        return redirect('accounts:login')
     return render(request, 'accounts/signup.html')
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('accounts:login')
 
 @login_required
 def home_view(request):
     if not request.user.userprofile.is_approved:
         messages.error(request, "Your account is pending approval. Please contact the admin.")
-        return redirect('login')
+        return redirect('accounts:login')
     
     return render(request, 'my_project/home.html')
