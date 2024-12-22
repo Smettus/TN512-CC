@@ -55,7 +55,7 @@ osmGeocoder.on('markgeocode', e => {
    resultMarker.bindPopup(e.geocode.name).openPopup();
 });
 
-let planeMarkers = [];
+let Markers = [];
 
 // Upon map move -> api call
 function getBoundingBox() {
@@ -101,10 +101,10 @@ async function fetchPlaneData() {
     
         // Ensure the response body is read only once
         
-        const planes = await response.json();
+        const Objects = await response.json();
 
         // Process the data (update map markers)
-        updatePlaneMarkers(JSON.parse(planes));
+        updatePlaneMarkers(JSON.parse(Objects));
     } catch (error) {
         console.error('Error fetching plane data:', error);
     } finally {
@@ -114,12 +114,12 @@ async function fetchPlaneData() {
 }
 
 // Update the markers on the map based on the fetched data
-function updatePlaneMarkers(planes) {
+function updatePlaneMarkers(Objects) {
     // Remove old markers
-    planeMarkers.forEach(marker => {
+    Markers.forEach(marker => {
         map.removeLayer(marker);
     });
-    planeMarkers = [];
+    Markers = [];
 
     // Function to determine color based on altitude
     function getColorForAltitude(altitude) {
@@ -139,51 +139,94 @@ function updatePlaneMarkers(planes) {
     }
     
     // Add new markers
-    planes.forEach(plane => {
-        
-        const { latitude, longitude, geo_altitude, call_sign, velocity, origin_country, true_track } = plane.Properties;
+    Objects.forEach(obj => {
+        if (obj.Type == "Plane"){
+            const { latitude, longitude, geo_altitude, call_sign, velocity, origin_country, true_track } = obj.Properties;
 
-        if (latitude && longitude) {
-            // Determine icon color based on altitude
-            let planeColor = getColorForAltitude(parseFloat(geo_altitude));
-            let iconOpacity = 1; // Full opacity
+            if (latitude && longitude) {
+                // Determine icon color based on altitude
+                let planeColor = getColorForAltitude(parseFloat(geo_altitude));
+                let iconOpacity = 1; // Full opacity
 
-            // Create a custom SVG icon
-            var planeIcon = L.divIcon({
-                className: 'plane-icon', // Custom class for styling
-                html: `
-                    <svg width="25" height="125" viewBox="0 0 512 512" style="transform: rotate(${true_track}deg); display: block;">
-                        <path d="M488.063,283.172l-178.016-83.078V68.938C310.047,37.391,287.547,0,256,0s-54.047,37.391-54.047,68.938
-                            v131.156L23.938,283.172c-3.922,2.391-7.141,8.109-7.141,12.703v56.703c0,4.609,3.563,7.172,7.922,5.703l188.219-49.188
-                            v119.281c0,0-30.609,22.438-48.953,34.688c-18.344,12.219-10.203,36.688,4.078,36.688c14.266,0,68.563,0,68.563,0
-                            S245.797,512,256,512s19.375-12.25,19.375-12.25s54.297,0,68.563,0c14.281,0,22.422-24.469,4.078-36.688
-                            c-18.344-12.25-48.953-34.688-48.953-34.688V309.094l188.203,49.188c4.375,1.469,7.938-1.094,7.938-5.703v-56.703
-                            C495.203,291.281,492,285.563,488.063,283.172z" fill="${planeColor}" opacity="${iconOpacity}"/>
-                    </svg>
-                `,
-                iconSize: [25, 25],
-                iconAnchor: [12, 13]
-            });
+                // Create a custom SVG icon
+                var planeIcon = L.divIcon({
+                    className: 'plane-icon', // Custom class for styling
+                    html: `
+                        <svg width="25" height="125" viewBox="0 0 512 512" style="transform: rotate(${true_track}deg); display: block;">
+                            <path d="M488.063,283.172l-178.016-83.078V68.938C310.047,37.391,287.547,0,256,0s-54.047,37.391-54.047,68.938
+                                v131.156L23.938,283.172c-3.922,2.391-7.141,8.109-7.141,12.703v56.703c0,4.609,3.563,7.172,7.922,5.703l188.219-49.188
+                                v119.281c0,0-30.609,22.438-48.953,34.688c-18.344,12.219-10.203,36.688,4.078,36.688c14.266,0,68.563,0,68.563,0
+                                S245.797,512,256,512s19.375-12.25,19.375-12.25s54.297,0,68.563,0c14.281,0,22.422-24.469,4.078-36.688
+                                c-18.344-12.25-48.953-34.688-48.953-34.688V309.094l188.203,49.188c4.375,1.469,7.938-1.094,7.938-5.703v-56.703
+                                C495.203,291.281,492,285.563,488.063,283.172z" fill="${planeColor}" opacity="${iconOpacity}"/>
+                        </svg>
+                    `,
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 13]
+                });
 
-            // Create a marker with the custom icon
-            const marker = L.marker([latitude, longitude], { icon: planeIcon })
-                .addTo(map)
-                .bindPopup(`
-                    <div style="text-align: center;">
-                        <img src="plane_icon.png" style="width: 100px; height: auto; border: none;" />
-                        <p><b>Latitude:</b> ${latitude}°</p>
-                        <p><b>Longitude:</b> ${longitude}°</p>
-                        <p><b>Altitude:</b> ${geo_altitude}</p>
-                        <p><b>Call Sign:</b> ${call_sign}</p>
-                        <p><b>Velocity:</b> ${velocity} m/s</p>
-                        <p><b>Origin:</b> ${origin_country}</p>
-                    </div>
-                `);
+                // Create a marker with the custom icon
+                const marker = L.marker([latitude, longitude], { icon: planeIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="text-align: center;">
+                            <img src="plane_icon.png" style="width: 100px; height: auto; border: none;" />
+                            <p><b>Latitude:</b> ${latitude}°</p>
+                            <p><b>Longitude:</b> ${longitude}°</p>
+                            <p><b>Altitude:</b> ${geo_altitude}</p>
+                            <p><b>Call Sign:</b> ${call_sign}</p>
+                            <p><b>Velocity:</b> ${velocity} m/s</p>
+                            <p><b>Origin:</b> ${origin_country}</p>
+                        </div>
+                    `);
 
-            // Add marker to the array for later removal
-            planeMarkers.push(marker);
-        } else {
-            console.error("Invalid coordinates:", plane);
+                // Add marker to the array for later removal
+                Markers.push(marker);
+            } else {
+                console.error("Invalid coordinates:", obj);
+            }
+        }else if(obj.Type == "Ship"){
+            
+            const { latitude, longitude, enemy, time_position, SOG, COG} = obj.Properties;
+            
+            const colors = ["#FF5733", "#33FF57", "#3357FF", "#FFFF33", "#FF33FF", "#33FFFF"];
+            const randomIndex = Math.floor(Math.random() * colors.length);
+
+            if (latitude && longitude) {
+                // Determine icon color based on altitude
+                let shipColor = "#000000"; // colors[randomIndex];
+                let iconOpacity = 1; // Full opacity
+
+                // Create a custom SVG icon
+                var triangleIcon = L.divIcon({
+                    className: 'triangle-icon', // Custom class for styling
+                    html: `
+                        <svg width="15" height="15" viewBox="0 0 100 100" style="transform: rotate(${COG}deg); display: block;">
+                            <!-- A simple triangle pointing upwards -->
+                            <polygon points="50,10 10,90 90,90" fill="${shipColor}" opacity="${iconOpacity}" />
+                        </svg>
+                    `,
+                    iconSize: [15, 15], // Adjust as needed
+                    iconAnchor: [15, 15] // Adjust anchor to center the icon
+                });
+
+                // Create a marker with the custom icon
+                const marker = L.marker([latitude, longitude], { icon: triangleIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="text-align: center;">
+                            <img src="plane_icon.png" style="width: 100px; height: auto; border: none;" />
+                            <p><b>Latitude:</b> ${latitude}°</p>
+                            <p><b>Longitude:</b> ${longitude}°</p>
+                            <p><b>enemy:</b> ${enemy}</p>
+                            <p><b>SOG:</b> ${SOG}°</p>
+                            <p><b>COG:</b> ${COG}°</p>
+                        </div>
+                    `);
+
+                // Add marker to the array for later removal
+                Markers.push(marker);
+            }
         }
     });
 }

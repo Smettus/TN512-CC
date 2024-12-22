@@ -41,10 +41,13 @@ class Entities(models.Model):
 class Ship(models.Model):
     ship_id = models.AutoField(primary_key=True)
     entry_id = models.IntegerField()
-    entity = models.ForeignKey(Entities, models.DO_NOTHING)
-    ship_name = models.CharField(max_length=255, blank=True, null=True)
-    ship_type = models.CharField(max_length=255, blank=True, null=True)
-    displacement = models.IntegerField(blank=True, null=True)
+    entity_id = models.IntegerField() #unique MMSI nr
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    enemy = models.IntegerField()
+    time_position = models.DateTimeField(max_length=255)
+    SOG = models.FloatField()
+    COG = models.FloatField()
 
     class Meta:
         db_table = 'ship'

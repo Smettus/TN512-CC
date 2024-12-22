@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from tutorials.models import Plane
+from tutorials.models import Plane, Ship
  
  
 class PlaneSerializer(serializers.ModelSerializer):
@@ -20,3 +20,16 @@ class PlaneSerializer(serializers.ModelSerializer):
                 'on_ground',
                 'category',
                 'size')
+
+class ShipSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Ship
+        fields = ('entry_id',
+                  'entity_id',
+                  'latitude',
+                  'longitude',
+                  'enemy',
+                  'time_position',
+                  'SOG',
+                  'COG')
