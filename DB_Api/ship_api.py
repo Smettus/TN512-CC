@@ -2,10 +2,11 @@ import time
 import asyncio
 import requests
 from API_c2c import ShipAPI
+from API_c2c import DJANGO_SERVER_URL
 import json
 
 # Django server URL (replace with your actual Django server URL)
-DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'
+#DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'
 ENTRIES = 0
 SHIP_API = ShipAPI()
 

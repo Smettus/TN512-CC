@@ -1,6 +1,7 @@
 import time
 import requests  # To make HTTP requests
 from API_c2c import Plane_API
+from API_c2c import DJANGO_SERVER_URL
 import json
 from random import randrange
 
@@ -23,8 +24,6 @@ OpenSkyApi._check_lat(bbox[0])
             
 """
 
-# Django server URL (replace with your actual Django server URL)
-DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Django API
 
 def send_to_django(data,id):
     """Send plane data to Django server via a POST request."""

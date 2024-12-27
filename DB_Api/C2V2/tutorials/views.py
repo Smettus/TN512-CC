@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view
 
 from .HandleConnection import Handler, Retriever
 
-
+import traceback        # for debugging
 
 @api_view(['GET', 'POST', 'DELETE'])
 def tutorial_list(request):
@@ -18,32 +18,38 @@ def tutorial_list(request):
     retriever = Retriever()
     # GET list of Plane, POST a new Plane, DELETE all Plane
     if request.method == 'GET':
-        # CHECK TYPE OF GET REQUEST
-        if request.GET.get('Type', None) == "Latest_all":
-            latest_planes = retriever.get_latest(Plane,"Plane")
-            latest_ships = retriever.get_latest(Ship,"Ships")
-            # latest_ground = retriever.get_latest( <Ground Model> )
-            # Create list of all the sub lists
-            latest_all = latest_planes
-            return JsonResponse(latest_all,safe = False)
-        
-        if request.GET.get('Type', None) == "bbox":
-            # Retrieve the coordinates from the query parameters and store them in an array
-            bbox_arr = (
-                float(request.GET.get('sw_lng', 0)),  # Southwest longitude
-                float(request.GET.get('sw_lat', 0)),  # Southwest latitude
-                float(request.GET.get('ne_lng', 0)),  # Northeast longitude
-                float(request.GET.get('ne_lat', 0))   # Northeast latitude
-            )
+        try:
+            # CHECK TYPE OF GET REQUEST
+            if request.GET.get('Type', None) == "Latest_all":
+                latest_planes = retriever.get_latest(Plane,"Plane")
+                latest_ships = retriever.get_latest(Ship,"Ships")
+                # latest_ground = retriever.get_latest( <Ground Model> )
+                # Create list of all the sub lists
+                latest_all = latest_planes
+                return JsonResponse(latest_all,safe = False)
             
-            latest_planes = retriever.get_in_bbox(Plane,"Plane",bbox_arr)
-           
-            latest_ships = retriever.get_latest(Ship,"Ship")
-            # latest_ground = retriever.get_latest( <Ground Model> )
-            # Create list of all the sub lists
-            latest_all = latest_planes + latest_ships
-            
-            return JsonResponse(latest_all,safe = False)
+            if request.GET.get('Type', None) == "bbox":
+                # Retrieve the coordinates from the query parameters and store them in an array
+                bbox_arr = (
+                    float(request.GET.get('sw_lng', 0)),  # Southwest longitude
+                    float(request.GET.get('sw_lat', 0)),  # Southwest latitude
+                    float(request.GET.get('ne_lng', 0)),  # Northeast longitude
+                    float(request.GET.get('ne_lat', 0))   # Northeast latitude
+                )
+                
+                latest_planes = retriever.get_in_bbox(Plane,"Plane",bbox_arr)
+                
+                latest_ships = retriever.get_latest(Ship,"Ship")
+                # latest_ground = retriever.get_latest( <Ground Model> )
+                # Create list of all the sub lists
+                latest_all = latest_planes + latest_ships
+                
+                return JsonResponse(latest_all,safe = False)
+        except Exception as e:
+            # find the sneaky bug
+            print(f"{e}")
+            print(traceback.format_exc())
+            raise
         
     
     elif request.method == 'POST':

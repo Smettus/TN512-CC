@@ -6,7 +6,7 @@ from .queries import fetch_planes_in_bbox
 
 @csrf_exempt  # Temporarily disable CSRF protection for simplicity
 def planes_within_bbox(request):
-    
+    print(request.body)
     if request.method =='POST':
         DJANGO_URL = "http://127.0.0.1:8080/api/tutorials"
         body = json.loads(request.body.decode('utf-8'))
@@ -33,5 +33,5 @@ def planes_within_bbox(request):
         except Exception as e:
             print(f"Error connecting to Django server: {e}")
     print("Not good")
-    return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+    return JsonResponse({'error': 'Invalid HTTP method'}, status=response.status_code) # get the right status code loser who wrote this
 

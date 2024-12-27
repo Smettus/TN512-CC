@@ -5,8 +5,8 @@ import mysql.connector # pip install mysql-connector-python
 
 db_config = {
     "host": "localhost",
-    "user": "saboyouneskms",  # Replace with your MySQL username
-    "password": "Meeslovers175!",  # Replace with your MySQL password
+    "user": "smettus",  # Replace with your MySQL username
+    "password": "derpderp",  # Replace with your MySQL password
 }
 dbpath = "./DB_Api/C2V2/"
 db_sql_file = "./DB_Api/C2V2/C2V2/db.sql"
