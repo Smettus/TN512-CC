@@ -1,0 +1,5 @@
+-- Step 1: Create Database
+CREATE DATABASE IF NOT EXISTS C2;
+USE C2;
+
+
