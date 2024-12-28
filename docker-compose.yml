@@ -1,74 +1,68 @@
-services:
-  db:
-    image: mysql:5.7  
-    container_name: mysql_db
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-    ports:
-      - "3306:3306"  
+networks:
+  app_network:
+    driver: bridge
 
-  web:
+services:
+  
+  db:
+    image: mysql:5.7
+    env_file:
+      - .env 
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"  # Utilisation de la variable d'environnement
+    networks:
+      - app_network
+
+  django:
     build:
       context: ./DB_Api_Docker/C2V2
-    container_name: django_app
     ports:
-      - "8080:8080"
+      - "${DJANGO_PORT}:${DJANGO_PORT}"
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306  # Connexion MySQL dans le conteneur avec le port interne 3306
-      DB_NAME: mydb
-      DB_USER: myuser
-      DB_PASSWORD: mypassword
+    env_file:
+      - .env  
+    networks:
+      - app_network
 
-
-  python_service_1:
+  planes_api:
     build:
       context: ./DB_Api_Docker/planes
-    container_name: planes
+    ports:
+      - "${EXTERNAL_PORT_PLANE_API}:${INTERNAL_PORT_API}"
     depends_on:
       - db
-      - web
-    environment:
-      DJANGO_API_URL: http://web:8080
-      DB_HOST: db
-      DB_PORT: 3306  # Connexion MySQL dans le conteneur avec le port interne 3306
-      DB_NAME: mydb
-      DB_USER: myuser
-      DB_PASSWORD: mypassword
+      - django
+    env_file:
+      - .env  
+    networks:
+      - app_network
 
-
-  python_service_2:
+  ships_api:
     build:
       context: ./DB_Api_Docker/ships
-    container_name: ships
+    ports:
+      - "${EXTERNAL_PORT_SHIP_API}:${INTERNAL_PORT_API}"
     depends_on:
       - db
-      - web
-    environment:
-      DJANGO_API_URL: http://web:8080
-      DB_HOST: db
-      DB_PORT: 3306  # Connexion MySQL dans le conteneur avec le port interne 3306
-      DB_NAME: mydb
-      DB_USER: myuser
-      DB_PASSWORD: mypassword
-
+      - django
+    env_file:
+      - .env 
+    networks:
+      - app_network
 
   frontend:
     build:
       context: ./Website_server/src
-    container_name: webserver
     depends_on:
       - db
-      - web
-    environment:
-      DJANGO_API_URL: http://web:8080
-      DB_HOST: db
-      DB_PORT: 3306  # Connexion MySQL dans le conteneur avec le port interne 3306
-      DB_NAME: mydb
-      DB_USER: myuser
-      DB_PASSWORD: mypassword
+      - django
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    env_file:
+      - .env 
+    volumes: 
+      - ./Website_server/src/C_and_C/static:/app/C_and_C/static  # Monter C_and_C/static depuis le répertoire local
+      - ./Website_server/src/accounts/static:/app/accounts/static  # Monter accounts/static depuis le répertoire local
+    networks:
+      - app_network

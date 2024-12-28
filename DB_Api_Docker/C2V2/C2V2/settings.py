@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -133,16 +133,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb',  # Remplacez 'C2' par 'mydb' si vous utilisez 'mydb' comme base de données dans Docker
-        'USER': 'myuser',  # Remplacez 'USERNAME' par 'myuser'
-        'PASSWORD': 'mypassword',  # Remplacez 'PASSWORD' par 'mypassword'
-        'HOST': 'db',  # Utilisez le nom du service de la base de données dans Docker
-        'PORT': '3306',  # Le port par défaut de MySQL est 3306
+        'NAME': os.environ.get('MYSQL_DATABASE'),  # Corrigé pour correspondre à la variable d'env dans .env
+        'USER': os.environ.get('MYSQL_USER'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'HOST': os.environ.get('MYSQL_HOST'),  # Nom du service Docker, ici 'db'
+        'PORT': os.environ.get('MYSQL_PORT'),  # Le port de la base de données
     }
 }
 
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    'http://host.docker.internal:8080',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+
+#CORS_ORIGIN_WHITELIST = (
+    #'http://127.0.0.1:8000',
+#)

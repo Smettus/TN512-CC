@@ -82,7 +82,7 @@ async function fetchAirportData() {
     isFetchingAirports = true;
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/static/js/world-airports.csv');
+        const response = await fetch('http://localhost:8000/static/js/world-airports.csv');
         const text = await response.text();
 
         Papa.parse(text, {
@@ -174,7 +174,7 @@ async function fetchPortData() {
     isFetchingPorts = true;
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/static/js/GLOBAL_Ports.csv');  // Mettez à jour le chemin du fichier CSV des ports
+        const response = await fetch('http://localhost:8000/static/js/GLOBAL_Ports.csv');  // Mettez à jour le chemin du fichier CSV des ports
         const text = await response.text();
 
         Papa.parse(text, {
@@ -260,7 +260,7 @@ async function fetchPlaneData() {
         });
 
         if (!response.ok) {
-            console.error('Failed to fetch plane data:', response.status, response.statusText);
+            console.error('Failed to fetch plane data:', response.status, response.text);
             return;
         }
 
@@ -388,8 +388,9 @@ map.on('moveend', () => {
 });
 L.control.layers(baseLayers).addTo(map);
 // Initial fetch of airport and plane data
+
 fetchAirportData();
 fetchPlaneData();
 fetchPortData();
 
-setInterval(fetchPlaneData, 3000);
+setInterval(fetchPlaneData, 1000);

@@ -3,6 +3,7 @@ import requests  # To make HTTP requests
 from API_c2c import Plane_API
 import json
 from random import randrange
+import os
 
 # Initialize Plane_API
 P_API = Plane_API()
@@ -23,10 +24,12 @@ OpenSkyApi._check_lat(bbox[0])
             
 """
 
+
+
 # Django server URL (replace with your actual Django server URL)
 #DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Django API
-DJANGO_SERVER_URL = 'http://host.docker.internal:8080/api/tutorials'
-
+#DJANGO_SERVER_URL = 'http://django:8080/api/tutorials'
+DJANGO_SERVER_URL = os.environ.get('DJANGO_URL')
 def send_to_django(data,id):
     """Send plane data to Django server via a POST request."""
     
@@ -34,16 +37,16 @@ def send_to_django(data,id):
     #(data['Properties'])
     try:
         response = requests.post(DJANGO_SERVER_URL, json=data)  # POST request with JSON payload
-        print(response.status_code)
+        print(f"Status code: {response.status_code}")
+        print(f"Response text: {response.text}")  # Afficher le corps de la réponse
         if response.status_code == 201:
             print("Data successfully sent to Django server.")
-            pass
-            #print("Data successfully sent to Django server.")
         else:
-            
             print(f"Failed to send data. Status code: {response.status_code}")
+            print(f"Response: {response.text}")
     except Exception as e:
         print(f"Error connecting to Django server: {e}")
+
 
 def main(): 
     

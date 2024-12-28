@@ -3,12 +3,13 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 from .queries import fetch_planes_in_bbox
+import os
 
 @csrf_exempt  # Temporarily disable CSRF protection for simplicity
 def planes_within_bbox(request):
     
     if request.method =='POST':
-        DJANGO_URL = "http://127.0.0.1:8080/api/tutorials"
+        DJANGO_URL = os.environ.get('DJANGO_URL')
         body = json.loads(request.body.decode('utf-8'))
         coordinates_array = [
             body['southwest']['lat'], body['southwest']['lng'],  # Southwest
@@ -30,6 +31,7 @@ def planes_within_bbox(request):
                
             else:
                 print(f"Failed to send data. Status code: {response.status_code}")
+                print(f"Failed to send data. Status code: {response.text}")
         except Exception as e:
             print(f"Error connecting to Django server: {e}")
     print("Not good")

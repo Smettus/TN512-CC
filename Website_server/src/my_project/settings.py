@@ -25,10 +25,18 @@ SECRET_KEY = 'django-insecure--jw8r4&j&l(fmvu5*1=yw$_ve$8x&)_x_98037-7$2^7!p9a5q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'access-control-allow-origin',
+    'authorization',
+    'x-csrftoken',
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -39,14 +47,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'C_and_C',
     'accounts',
+    'corsheaders',  # Ajoutez cette ligne
     #'rest_framework',
     #'rest_framework_simplejwt', # later, jwt authentication
 ]
 
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Doit être avant CommonMiddleware
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -139,3 +150,11 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+#CORS_ALLOWED_ORIGINS = [ 
+    #'http://localhost:8000', 
+    #'http://127.0.0.1:8000',
+#]
+
