@@ -169,4 +169,31 @@ docker-compose down
 ```
 This stops and removes the containers, networks, and volumes associated with the services (depending on the options used).
 
+# 5. Run the project 
+* Use the cd command to navigate to the directory where the docker-compose.yml file is located:
+  
+```bash
+cd /path/to/your/folder
+```
+* Run the following containers:
+
+```bash
+docker-compose up db
+```
+
+```bash
+docker-compose up django
+```
+
+```bash
+docker-compose up planes_api
+```
+
+```bash
+docker-compose up ships_api
+```
+
+```bash
+docker-compose up frontend
+```
 
