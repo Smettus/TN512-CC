@@ -116,7 +116,7 @@ docker-compose up Command To start all the services defined in the docker-compos
 # 3. Running a Single Container
 Docker Compose allows you to manage multiple services in a single `docker-compose.yml` file. If you want to run only a single service (container) from those defined in the file, you can specify the service as a parameter.
 
-Command to run a single container To run a specific container, use the following command, replacing `<service_name>` with the name of the service you want to start:
+To run a specific container, use the following command, replacing `<service_name>` with the name of the service you want to start:
 ```bash
 docker-compose up <service_name>
 ```
