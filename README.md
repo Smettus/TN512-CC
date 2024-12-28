@@ -1,9 +1,9 @@
 # README - Running a Docker Compose File and Managing Containers
 
-Introduction
-This guide explains how to use Docker Compose to manage Docker containers easily and quickly. It covers running `docker-compose.yml` files, the differences between the `-d` and `--build` options, and how to open one or more containers at the same time.
+# Introduction
+This guide explains how to use Docker Compose to manage Docker containers easily and quickly. It covers running `docker-compose.yml` files, the differences between the `-d` and `--build` options, and how to open one or more containers at the same time. Personally, I ran each container separately to ensure that each one works well.
 
-Attention: Database Data Loss
+# Attention: Database Data Loss
 If you are using a container that contains a database (e.g., MySQL, PostgreSQL, etc.), the data in the database will be lost every time the container is removed. This is because data is stored in the container's filesystem, which is temporary by default.
 
 To avoid data loss, you must configure persistent volumes in your docker-compose.yml file. These volumes allow you to persist the database data even if the container is removed or recreated. (not useful in our case)
