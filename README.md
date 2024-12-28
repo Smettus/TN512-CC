@@ -197,3 +197,35 @@ docker-compose up ships_api
 docker-compose up frontend
 ```
 
+or simply:
+
+```bash
+docker-compose up 
+```
+
+# Ensuring Django Waits for the Database to Be Ready
+The last option is the most efficient one compared to previous methods. Indeed, by simply launching the docker-compose file, everything works correctly. However, even if you specify in your `docker-compose.yml` file that the Django container should wait for the database to be ready, Django may still attempt to connect to the database too early.
+
+### Solution: Add `wait-for-it` to the Django Dockerfile
+To solve this issue, you need to add the wait-for-it command in the Django container's Dockerfile. This will ensure that Django waits until the database is fully ready before trying to connect.
+
+### Waiting for the Database to Be Ready Before Running Django
+In the Dockerfile of the Django service, we have included a command that ensures the Django application only starts once the database is fully up and running. This is crucial because if Django starts before the database is ready, it will attempt to connect and fail, resulting in errors.
+
+```bash
+RUN curl -sSL https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh -o /usr/local/bin/wait-for-it && chmod +x /usr/local/bin/wait-for-it
+```
+This command downloads and installs the `wait-for-it` script, which is used to delay the start of Django until the database is accessible.
+
+```bash
+CMD ["sh", "-c", "echo 'Waiting for database to be ready...' && wait-for-it db:${MYSQL_PORT} -- python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:${DJANGO_PORT}"]
+```
+* ```wait-for-it db:${MYSQL_PORT}```: This waits for the database to be up and running on the specified port (using the value of MYSQL_PORT).
+* ```python manage.py makemigrations```: After the database is ready, this command makes any necessary migrations for the Django application.
+* ```python manage.py migrate```: Applies the migrations to ensure the database schema is up to date.
+* ```python manage.py runserver 0.0.0.0:${DJANGO_PORT}```: Finally, it starts the Django application on the specified port (DJANGO_PORT).
+
+### Why This is Necessary
+Without this command, the Django application would attempt to connect to the database before it is ready, which would cause errors such as ```"Unable to connect to database."``` The ```wait-for-it``` script ensures that Django waits for the database service to be fully operational before attempting to connect, preventing these connection issues and ensuring smooth startup.
+
+
