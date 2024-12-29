@@ -1,0 +1,11 @@
+/BackEnd_Server/secret.txt
+*.txt
+/DB_Api/C2V2/.env/
+/Website_server/.env/
+/Website_server/.idea/
+__pycache__/
+*.py[cod]
+*.pyo
+**/migrations/*
+!**/migrations/__init__.py
+*.bat
