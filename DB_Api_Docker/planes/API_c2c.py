@@ -1,29 +1,14 @@
 import base64
 from opensky_api import OpenSkyApi
 import json
-import websockets
-from datetime import datetime, timezone
-import asyncio
+from datetime import datetime
+import os
 
 class Plane_API():
     def __init__(self) -> None:
-        pw_enc = self.get_password()
-        self.api = OpenSkyApi("SaYo",base64.b64decode(pw_enc).decode("utf-8"))
-    
-    def get_password(self):
-        file_name = 'secret.txt'
-
-        try:
-            with open(file_name, 'r') as file:
-                content = file.read()
-                
-        except FileNotFoundError:
-            print(f"The file '{file_name}' was not found.")
-        except IOError:
-            print(f"An error occurred while trying to read the file '{file_name}'.")
-            
-        return content
-    
+        pw_enc = os.environ.get("KEY_FLIGHT_API")
+        user = os.environ.get("USER_FLIGHT_API")
+        self.api = OpenSkyApi(user,base64.b64decode(pw_enc).decode("utf-8"))
     
     def get_bbox_tuple(self,bbox):
             """
@@ -107,7 +92,7 @@ class Plane_API():
         else:
             return states
     
-    def generate_json(self,data):
+    def generate_json(self,data,entry):
         """
             Convert an object of data received from the OpenSky API into a JSON object.
 
@@ -142,7 +127,7 @@ class Plane_API():
         json_object = {
             "Type": "Plane",  # As per the example, this is fixed Will change for other type of objects
             "Properties": {
-                "entry_id":None,
+                "entry_id":entry,
                 "entity_id": int(data.icao24,16),
                 "latitude": data.latitude,
                 "longitude": data.longitude,
@@ -162,7 +147,7 @@ class Plane_API():
         # if this funciton is not used in another function then return the json.dumps(json_object, indent = 4)
         return json_object
     
-    def generate_multiple_json(self, data_list, output_filename = 0):
+    def generate_multiple_json(self, data_list,entry, output_filename = 0):
         """
             Convert multiple data objects to a single JSON file with an array of JSON objects.
 
@@ -187,7 +172,7 @@ class Plane_API():
         json_list = []  # List to store all JSON objects
         
         for data in data_list:
-            json_object = self.generate_json(data)  # Call the function for each data object
+            json_object = self.generate_json(data,entry)  # Call the function for each data object
             json_list.append(json_object)      # Append the resulting JSON to the list
         
         # Write the list of JSON objects to a file

@@ -10,23 +10,27 @@ import os
 #DJANGO_SERVER_URL = 'http://django_app:8080/api/tutorials'
 
 DJANGO_SERVER_URL = os.environ.get('DJANGO_URL')
-ENTRIES = 0
+ENTRIES = int(os.environ.get("SHIP_ENTRY"))
 SHIP_API = ShipAPI()
 
-def send_to_django(data, entry_id):
+def send_to_django(data):
     """
     Send ship data to Django server via a POST request.
     """
     # Convert JSON string to dictionary if necessary
-    if isinstance(data, str):
-        data = json.loads(data)  # Parse JSON string into dictionary
+    #if isinstance(data, str):
+    #    data = json.loads(data)  # Parse JSON string into dictionary
 
     # Add the entry ID to the data
-    data['Properties']["entry_id"] = entry_id
-
+    # data['Properties']["entry_id"] = entry_id
+    print(f"Found {len(data)} ships")
+    json_data = {
+        'Type': "Ship",
+        'Ships': json.dumps(data,indent=4),
+    }
     try:
         # Send POST request to Django server
-        response = requests.post(DJANGO_SERVER_URL, json=data)
+        response = requests.post(DJANGO_SERVER_URL, json=json_data)
         if response.status_code == 201:
             print("Data successfully sent to Django server.")
             pass
@@ -39,23 +43,21 @@ async def process_ships():
     """
     Fetch ship data asynchronously and send it to the Django server.
     """
-    global ENTRIES
+    
     ship_api = ShipAPI()
+    
     while True:
-        ships = await ship_api.connect_ais_stream(timeout=6)
-        print(f"Found {len(ships)} ships")
-        
-        # un_val = len(list(set([ship['Properties']['entity_id'] for ship in ships])))
-        # print("     Amount of unique values in here: " + str(un_val))
+        global ENTRIES
         ENTRIES += 1
-        for ship in ships:
-            send_to_django(ship, ENTRIES)
-    """async for ship_data in ship_api.connect_ais_stream():
         
-        print(ship_data)
-        # send_to_django(ship_data, ENTRIES)
-        # print(ship_data) # to test output of jsons
-        await asyncio.sleep(5)"""
+        os.environ["SHIP_ENTRY"] = str(ENTRIES)
+        
+        ships = await ship_api.connect_ais_stream(timeout=6)
+        for s in ships:
+            s["Properties"]["entry_id"] = ENTRIES
+           
+        
+        send_to_django(ships)
 
 
 def main():

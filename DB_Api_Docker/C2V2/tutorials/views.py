@@ -18,6 +18,7 @@ def tutorial_list(request):
     retriever = Retriever()
     # GET list of Plane, POST a new Plane, DELETE all Plane
     if request.method == 'GET':
+        
         # CHECK TYPE OF GET REQUEST
         if request.GET.get('Type', None) == "Latest_all":
             latest_planes = retriever.get_latest(Plane,"Plane")
@@ -50,7 +51,6 @@ def tutorial_list(request):
         if request.data.get('Type', None) == "Plane":
             return handler.Plane(request)
         elif request.data.get('Type', None) == "Ship":
-            print(" We have a ship")
             return handler.Ship(request)
         elif request.data.get('Type', None) == "Ground":
             return handler.Ground(request)

@@ -3,29 +3,16 @@ import json
 import websockets
 from datetime import datetime
 import asyncio
+import os 
 
 class ShipAPI:
     def __init__(self):
-        self.api_key = self.get_password()
+        self.api_key = os.environ.get("KEY_SHIP_API")
         # Fixed bounding box for Belgium's territorial waters
         self.bbox = [[51.05, 2.10], [51.60, 3.40]]
         self.ships_dict = {}
-        
-    def get_password(self):
-        file_name = 'AIS_API_key.txt'
 
-        try:
-            with open(file_name, 'r') as file:
-                content = file.read().strip()
-        except FileNotFoundError:
-            print(f"The file '{file_name}' was not found.")
-            content = None
-        except IOError:
-            print(f"An error occurred while trying to read the file '{file_name}'.")
-            content = None
-        return content
-
-    async def connect_ais_stream(self, timeout=2):
+    async def connect_ais_stream(self,timeout=2):
         """
         Async function to collect ship data
         """

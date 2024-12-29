@@ -7,9 +7,9 @@ import os
 
 # Initialize Plane_API
 P_API = Plane_API()
-ENTRIES = 0
+ENTRIES = int(os.environ.get("FLIGHT_ENTRY"))
 # Bounding box for the area of interest
-BBOX = (49.5294835476, 51.4750237087,2.51357303225, 6.15665815596) 
+BBOX = (47.5294835476, 53.4750237087,0.51357303225, 8.15665815596) 
 """
 THIS SI HOW THE API HANDLES A BBOX
 OpenSkyApi._check_lat(bbox[0])
@@ -27,16 +27,18 @@ OpenSkyApi._check_lat(bbox[0])
 
 
 # Django server URL (replace with your actual Django server URL)
-#DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'  # Example URL for Django API
 #DJANGO_SERVER_URL = 'http://django:8080/api/tutorials'
 DJANGO_SERVER_URL = os.environ.get('DJANGO_URL')
-def send_to_django(data,id):
+
+def send_to_django(data):
     """Send plane data to Django server via a POST request."""
+    json_data = {
+        "Type": 'Plane',
+        "Planes" : data,
+    }
     
-    data['Properties']["entry_id"] = id 
-    #(data['Properties'])
     try:
-        response = requests.post(DJANGO_SERVER_URL, json=data)  # POST request with JSON payload
+        response = requests.post(DJANGO_SERVER_URL, json=json_data)  # POST request with JSON payload
         print(f"Status code: {response.status_code}")
         print(f"Response text: {response.text}")  # Afficher le corps de la réponse
         if response.status_code == 201:
@@ -58,13 +60,14 @@ def main():
             states = response.states
             global ENTRIES
             ENTRIES+=1
+            os.environ["FLIGHT_ENTRY"] = str(ENTRIES)
             # Generate the JSON data for the planes (up to 1000 states)
-            gp1_planes = P_API.generate_multiple_json(states)
+            gp1_planes = P_API.generate_multiple_json(states,ENTRIES)
             #print("Generated plane data:", json.loads(gp1_planes))
             # Send the generated plane data to the Django server
             
-            for p in json.loads(gp1_planes):
-                send_to_django(p,ENTRIES)
+            
+            send_to_django(gp1_planes)
                 
             
         else:

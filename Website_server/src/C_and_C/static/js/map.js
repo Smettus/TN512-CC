@@ -297,7 +297,40 @@ function updatePlaneMarkers(Objects) {
     Markers = [];
 
     Objects.forEach(obj => {
-        if (obj.Type == "Plane") {
+        if (obj.Type == "Ship") {
+            // Code pour gérer les navires
+            const { latitude, longitude, enemy, time_position, SOG, COG } = obj.Properties;
+    
+            const shipColor = "#000000"; // Changez cela si nécessaire
+            const track = isNaN(COG) ? 0 : parseFloat(COG);
+    
+            if (latitude && longitude) {
+                var triangleIcon = L.divIcon({
+                    className: 'triangle-icon',
+                    html: `
+                        <svg width="15" height="15" viewBox="0 0 100 100" style="transform: rotate(${track}deg); display: block;">
+                            <polygon points="50,10 10,90 90,90" fill="${shipColor}" />
+                        </svg>
+                    `,
+                    iconSize: [15, 15],
+                    iconAnchor: [15, 15]
+                });
+    
+                const marker = L.marker([latitude, longitude], { icon: triangleIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="text-align: center;">
+                            <p><b>Latitude:</b> ${latitude}°</p>
+                            <p><b>Longitude:</b> ${longitude}°</p>
+                            <p><b>Enemy:</b> ${enemy}</p>
+                            <p><b>SOG:</b> ${SOG}°</p>
+                            <p><b>COG:</b> ${COG}°</p>
+                        </div>
+                    `);
+    
+                Markers.push(marker);
+            }
+        } else if (obj.Type == "Plane") {
             const { latitude, longitude, geo_altitude, call_sign, velocity, origin_country, true_track } = obj.Properties;
     
             if (latitude && longitude) {
@@ -337,39 +370,6 @@ function updatePlaneMarkers(Objects) {
     
                 Markers.push(marker);
             }
-        } else if (obj.Type == "Ship") {
-            // Code pour gérer les navires
-            const { latitude, longitude, enemy, time_position, SOG, COG } = obj.Properties;
-    
-            const shipColor = "#000000"; // Changez cela si nécessaire
-            const track = isNaN(COG) ? 0 : parseFloat(COG);
-    
-            if (latitude && longitude) {
-                var triangleIcon = L.divIcon({
-                    className: 'triangle-icon',
-                    html: `
-                        <svg width="15" height="15" viewBox="0 0 100 100" style="transform: rotate(${track}deg); display: block;">
-                            <polygon points="50,10 10,90 90,90" fill="${shipColor}" />
-                        </svg>
-                    `,
-                    iconSize: [15, 15],
-                    iconAnchor: [15, 15]
-                });
-    
-                const marker = L.marker([latitude, longitude], { icon: triangleIcon })
-                    .addTo(map)
-                    .bindPopup(`
-                        <div style="text-align: center;">
-                            <p><b>Latitude:</b> ${latitude}°</p>
-                            <p><b>Longitude:</b> ${longitude}°</p>
-                            <p><b>Enemy:</b> ${enemy}</p>
-                            <p><b>SOG:</b> ${SOG}°</p>
-                            <p><b>COG:</b> ${COG}°</p>
-                        </div>
-                    `);
-    
-                Markers.push(marker);
-            }
         }
     });
     
@@ -381,16 +381,16 @@ let debounceTimer;
 map.on('moveend', () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-        fetchAirportData();  // Fetch airports based on bounding box
+        //fetchAirportData();  // Fetch airports based on bounding box
         fetchPlaneData();    // Fetch plane data based on bounding box
-        fetchPortData();
+        //fetchPortData();
     }, 500); // Prevent overlapping calls
 });
 L.control.layers(baseLayers).addTo(map);
 // Initial fetch of airport and plane data
 
-fetchAirportData();
+//fetchAirportData();
 fetchPlaneData();
-fetchPortData();
+//fetchPortData();
 
-setInterval(fetchPlaneData, 1000);
+setInterval(fetchPlaneData, 2000);

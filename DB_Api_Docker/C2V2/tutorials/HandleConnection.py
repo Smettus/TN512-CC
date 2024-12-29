@@ -10,69 +10,73 @@ class Handler():
         pass
     
     def Plane(self,req):
-        plane_data = req.data.get('Properties', None)  # DRF automatically handles JSON parsing
-      
-        # Ensure the entity_id exists in the request data
-        
-        entity_id = plane_data.get('entity_id')
-        
-        if not entity_id:
-            # If entity_id is missing, return an error
-            return Response({'error': 'entity_id is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the entity already exists in the entities table, or create it if not
-        entity, created = Entities.objects.get_or_create(
-            entity_id = entity_id,  # Match on the entity_id in the Entities table
-            defaults={'name': plane_data.get('call_sign'), 'type': 'Plane'}  # Default values if the entity is created
-        )
-        
-        # Update the plane_data with the correct entity_id if needed
-        plane_data['entity_id'] = entity.entity_id
-        # Serialize the incoming plane data
-        plane_serializer = PlaneSerializer(data=plane_data)
-        # Check if the serialized data is valid
-        if plane_serializer.is_valid():
-            # Save the valid data to the database
-            plane_serializer.save()
+        planes= req.data.get('Planes', None)  # DRF automatically handles JSON parsing
+        for plane_data in json.loads(planes):
+            # Ensure the entity_id exists in the request data
+            plane_data = plane_data.get('Properties',None)
+            entity_id = plane_data.get('entity_id')
             
-            # Return the serialized data as a response with HTTP 201 Created status
-            return Response(plane_serializer.data, status=status.HTTP_201_CREATED)
+            if not entity_id:
+                # If entity_id is missing, return an error
+                return Response({'error': 'entity_id is required'}, status=status.HTTP_400_BAD_REQUEST)
             
-        # If the data is invalid, return validation errors with HTTP 400 Bad Request status
-        
-        return Response(plane_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Check if the entity already exists in the entities table, or create it if not
+            entity, created = Entities.objects.get_or_create(
+                entity_id = entity_id,  # Match on the entity_id in the Entities table
+                defaults={'name': plane_data.get('call_sign'), 'type': 'Plane'}  # Default values if the entity is created
+            )
+            
+            # Update the plane_data with the correct entity_id if needed
+            plane_data['entity_id'] = entity.entity_id
+            # Serialize the incoming plane data
+            plane_serializer = PlaneSerializer(data=plane_data)
+            # Check if the serialized data is valid
+            if plane_serializer.is_valid():
+                # Save the valid data to the database
+                plane_serializer.save()
+            else:    
+                
+                # If the data is invalid, return validation errors with HTTP 400 Bad Request status
+                return Response(plane_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Return the serialized data as a response with HTTP 201 Created status
+        return Response(plane_serializer.data, status=status.HTTP_201_CREATED)
     
     def Ship(self,req):
-        ship_data = req.data.get('Properties', None)  # DRF automatically handles JSON parsing
-
+        Ships = json.loads(req.data.get('Ships', None)) 
+       
+        for ship_data in Ships:
             # Ensure the entity_id exists in the request data
-        entity_id = ship_data.get('entity_id')
-        
-        if not entity_id:
-            # If entity_id is missing, return an error
-            return Response({'error': 'entity_id is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if the entity already exists in the entities table, or create it if not
-        entity, created = Entities.objects.get_or_create(
-            entity_id=entity_id,  # Match on the entity_id in the Entities table
-            defaults={'name': ship_data.get('entity_id'), 'type': 'Ship'}  # Default values if the entity is created
-        )
-        
-        # Update the ship_data with the correct entity_id if needed
-        ship_data['entity_id'] = entity.entity_id
+            ship_data = ship_data.get('Properties',None)
+            # Ensure the entity_id exists in the request data
+            entity_id = ship_data.get('entity_id')
+            
+            if not entity_id:
+                # If entity_id is missing, return an error
+                return Response({'error': 'entity_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Check if the entity already exists in the entities table, or create it if not
+            entity, created = Entities.objects.get_or_create(
+                entity_id=entity_id,  # Match on the entity_id in the Entities table
+                defaults={'name': ship_data.get('entity_id'), 'type': 'Ship'}  # Default values if the entity is created
+            )
+            
+            # Update the ship_data with the correct entity_id if needed
+            ship_data['entity_id'] = entity.entity_id
 
-        # Serialize the incoming ship data
-        ship_serializer = ShipSerializer(data=ship_data)
+            # Serialize the incoming ship data
+            ship_serializer = ShipSerializer(data=ship_data)
 
-        # Check if the serialized data is valid
-        if ship_serializer.is_valid():
-            # Save the valid data to the database
-            ship_serializer.save()
-            return Response(ship_serializer.data, status=status.HTTP_201_CREATED)
-
-        # If the data is invalid, return validation errors
-        return Response(ship_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+            # Check if the serialized data is valid
+            if ship_serializer.is_valid():
+                # Save the valid data to the database
+                ship_serializer.save()
+                
+            else:
+                # If the data is invalid, return validation errors
+                return Response(ship_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        return Response(ship_serializer.data, status=status.HTTP_201_CREATED)
     def Ground(self,req):
         pass
     
