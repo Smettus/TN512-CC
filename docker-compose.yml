@@ -9,7 +9,7 @@ services:
     env_file:
       - .env 
     ports:
-      - "${MYSQL_PORT}:${MYSQL_PORT}"  # Utilisation de la variable d'environnement
+      - "${MYSQL_EXTERNAL_PORT}:${MYSQL_INTERNAL_PORT}"  # internal port should stay 3306 though
     networks:
       - app_network
 
@@ -50,6 +50,21 @@ services:
       - .env 
     networks:
       - app_network
+
+  incident_generator_api:
+    build:
+      context: ./DB_Api_Docker/incidentgenerator
+    ports:
+      - "${EXTERNAL_PORT_INCIDENT_GENERATOR_API}:${INTERNAL_PORT_API}"
+    env_file:
+      - .env
+    networks:
+      - app_network
+    logging:
+      driver: "json-file"  # Docker will capture logs in JSON format
+      options:
+        max-size: "10m"     # Limit log file size to 10MB
+        max-file: "3"       # Keep the last 3 log files
 
   frontend:
     build:

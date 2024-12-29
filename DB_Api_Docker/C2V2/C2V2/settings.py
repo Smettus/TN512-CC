@@ -137,7 +137,7 @@ DATABASES = {
         'USER': os.environ.get('MYSQL_USER'),
         'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
         'HOST': os.environ.get('MYSQL_HOST'),  # Nom du service Docker, ici 'db'
-        'PORT': os.environ.get('MYSQL_PORT'),  # Le port de la base de données
+        'PORT': os.environ.get('MYSQL_INTERNAL_PORT'),  # Le port de la base de données
     }
 }
 
