@@ -77,6 +77,8 @@ class Handler():
                 return Response(ship_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
         return Response(ship_serializer.data, status=status.HTTP_201_CREATED)
+    
+    
     def Ground(self,req):
         pass
     
@@ -137,6 +139,11 @@ class Retriever():
         return (sw_lat <= lat <= ne_lat) and (sw_lng <= lng <= ne_lng)
 
     def get_in_bbox(self,model,type,bbox):
+        # check if table exists aka if there are entries
+        if not model.objects.exists():
+            print("The table is empty.")
+            return []  # Return an empty list 
+        
         # get latest entry_id
         entries = model.objects.order_by("-entry_id")
         latest_entry_id = entries[0].entry_id
