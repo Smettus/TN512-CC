@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from tutorials.models import Plane, Ship
+from tutorials.models import Plane, Ship, AbstractIncident
  
  
 class PlaneSerializer(serializers.ModelSerializer):
@@ -33,3 +33,14 @@ class ShipSerializer(serializers.ModelSerializer):
                   'time_position',
                   'SOG',
                   'COG')
+        
+        
+class IncidentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbstractIncident
+        # no id for the moment, as the db will generate it.
+        fields = ('lon',
+                  'lat',
+                  'msg',
+                  'time'
+                  )

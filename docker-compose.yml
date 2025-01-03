@@ -56,6 +56,9 @@ services:
       context: ./DB_Api_Docker/incidentgenerator
     ports:
       - "${EXTERNAL_PORT_INCIDENT_GENERATOR_API}:${INTERNAL_PORT_API}"
+    depends_on:
+      - db
+      - django
     env_file:
       - .env
     networks:

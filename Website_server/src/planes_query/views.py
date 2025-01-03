@@ -5,11 +5,13 @@ import requests
 from .queries import fetch_planes_in_bbox
 import os
 
+DJANGO_URL = os.environ.get('DJANGO_URL')
+
 @csrf_exempt  # Temporarily disable CSRF protection for simplicity
 def planes_within_bbox(request):
     
+    # phoah. we get a post request, but then do a get request to the backend, fix this
     if request.method =='POST':
-        DJANGO_URL = os.environ.get('DJANGO_URL')
         body = json.loads(request.body.decode('utf-8'))
         coordinates_array = [
             body['southwest']['lat'], body['southwest']['lng'],  # Southwest

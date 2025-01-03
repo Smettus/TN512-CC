@@ -61,3 +61,20 @@ class Landforce(models.Model):
 
     class Meta:
         db_table = 'landforce'
+        
+class AbstractIncident(models.Model):
+    # we only need an entry id right? 
+    # In this case, just automatically generate a primary key, which auto increases.
+    # No need to fiddle with own generation of id's.
+    # In future, make them with a specific time-based uuid or something?
+    # Best would be to have some sort of parent id, which describes each event as a
+    # specific incident, and news messages related to it would be assigned to it.
+    id = models.AutoField(primary_key=True)
+    msg = models.TextField(blank=True, null=True)
+    lat = models.FloatField()
+    lon = models.FloatField()
+    time = models.DateTimeField(blank=True, null=True)
+    
+    # make table after makemigrations and migrate (django framework)
+    class Meta:
+        db_table = 'abstract_incident'

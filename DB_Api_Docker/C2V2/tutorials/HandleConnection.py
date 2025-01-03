@@ -1,9 +1,15 @@
 from tutorials.models import Plane,Entities
-from tutorials.serializers import PlaneSerializer, ShipSerializer
+from tutorials.serializers import PlaneSerializer, ShipSerializer, IncidentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
 import json
+import logging
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
 
 class Handler():
     def __init__(self) -> None:
@@ -81,6 +87,30 @@ class Handler():
     
     def Ground(self,req):
         pass
+    def AbstractIncident(self, req):
+        # why not refactor the rest? - both ships and planes are handled the same way
+        # comes from incident_generator.py, over views.py to here
+        try:
+            # Get the dictionary from the request
+            abstractincidents = req.data.get('Incidents', None)
+            if not abstractincidents:
+                raise ValueError('No "Incidents" key found in the request.')
+        except Exception as e:
+            return Response({'error': f'Error: {e}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Process each incident (it's already a list of dictionaries)
+        for incident_data in abstractincidents:
+            incident_serializer = IncidentSerializer(data=incident_data)
+            if incident_serializer.is_valid():
+                incident_serializer.save()
+                logging.info(f"Saved incident: {incident_serializer.data}")
+            else:
+                logging.error(f"Failed to save incident: {incident_serializer.errors}")
+                return Response(incident_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(incident_serializer.data, status=status.HTTP_201_CREATED)
+
+
     
 class Retriever():
     def __init__(self) -> None:
@@ -127,6 +157,8 @@ class Retriever():
                 res.append(json_object)
         
         elif type == "Ground":
+            pass
+        elif type == "AbstractIncident":
             pass
         
 

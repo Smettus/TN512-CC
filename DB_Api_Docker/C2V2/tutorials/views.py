@@ -9,7 +9,11 @@ from tutorials.serializers import PlaneSerializer
 from rest_framework.decorators import api_view
 
 from .HandleConnection import Handler, Retriever
-
+import logging
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
 
 @api_view(['GET', 'POST', 'DELETE'])
@@ -53,6 +57,11 @@ def tutorial_list(request):
             return handler.Ship(request)
         elif request.data.get('Type', None) == "Ground":
             return handler.Ground(request)
+        elif request.data.get('Type', None) == "AbstractIncident":
+            #logging.info("got the request, yeeeey")
+            return handler.AbstractIncident(request)
+        else:
+            pass # here need to handle the error if the post does not exist, tell the client that requested it
         
     elif request.method == 'DELETE':
         count = Plane.objects.all().delete()

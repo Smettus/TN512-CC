@@ -82,7 +82,7 @@ async function fetchAirportData() {
     isFetchingAirports = true;
 
     try {
-        const response = await fetch('http://localhost:8000/static/js/world-airports.csv');
+        const response = await fetch('http://localhost:8000/static/js/world-airports.csv'); // fix this... hardcoded
         const text = await response.text();
 
         Papa.parse(text, {
@@ -174,7 +174,7 @@ async function fetchPortData() {
     isFetchingPorts = true;
 
     try {
-        const response = await fetch('http://localhost:8000/static/js/GLOBAL_Ports.csv');  // Mettez à jour le chemin du fichier CSV des ports
+        const response = await fetch('http://localhost:8000/static/js/GLOBAL_Ports.csv');  // Mettez à jour le chemin du fichier CSV des ports xx fix this, hardcoded
         const text = await response.text();
 
         Papa.parse(text, {
@@ -237,7 +237,8 @@ function updatePortMarkers(ports, bbox) {
         }
     });
 }
-
+// UGLY - fix this. There should be an option for the user to select which data he wants to see;
+// if only planes, then only request the planes...
 // Fetch plane data from the backend
 async function fetchPlaneData() {
     var bbox = getBoundingBox();
@@ -388,7 +389,6 @@ map.on('moveend', () => {
 });
 L.control.layers(baseLayers).addTo(map);
 // Initial fetch of airport and plane data
-
 //fetchAirportData();
 fetchPlaneData();
 //fetchPortData();

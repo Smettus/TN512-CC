@@ -4,6 +4,11 @@ from API_c2c import Plane_API
 import json
 from random import randrange
 import os
+import logging
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO # debug is too verbose
+)
 
 # Initialize Plane_API
 P_API = Plane_API()
@@ -39,21 +44,22 @@ def send_to_django(data):
     
     try:
         response = requests.post(DJANGO_SERVER_URL, json=json_data)  # POST request with JSON payload
-        print(f"Status code: {response.status_code}")
-        print(f"Response text: {response.text}")  # Afficher le corps de la réponse
+        #print(f"Status code: {response.status_code}")
+        #print(f"Response text: {response.text}")  # Afficher le corps de la réponse
         if response.status_code == 201:
-            print("Data successfully sent to Django server.")
+            #print("Data successfully sent to Django server.")
+            logging.info("Data sent to DB.")
         else:
-            print(f"Failed to send data. Status code: {response.status_code}")
-            print(f"Response: {response.text}")
+            logging.info(f"Failed to send data. Status code: {response.status_code}")
+            logging.info(f"Response: {response.text}")
     except Exception as e:
-        print(f"Error connecting to Django server: {e}")
+        logging.info(f"Error connecting to Django server: {e}")
 
 
 def main(): 
     
     while True:
-        print(BBOX)
+        logging.info(BBOX)
         # Call the Plane API and get the response with plane states
         response = P_API.get_bbox_call(BBOX)
         if response is not None:
@@ -71,7 +77,7 @@ def main():
                 
             
         else:
-            print("No planes found in this area.")
+            logging.info("No planes found in this area.")
             time.sleep(5)  # Sleep for 5 seconds before fetching again
 
 if __name__ == '__main__':

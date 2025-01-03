@@ -4,6 +4,12 @@ import requests
 from API_c2c import ShipAPI
 import json
 import os
+import logging
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO # debug is too verbose
+)
+
 
 # Django server URL (replace with your actual Django server URL)
 #DJANGO_SERVER_URL = 'http://127.0.0.1:8080/api/tutorials'
@@ -24,20 +30,23 @@ def send_to_django(data):
     # Add the entry ID to the data
     # data['Properties']["entry_id"] = entry_id
     print(f"Found {len(data)} ships")
+    logging.info(f"Found {len(data)} ships")
     json_data = {
         'Type': "Ship",
         'Ships': json.dumps(data,indent=4),
     }
+    #logging.info(json_data)
     try:
         # Send POST request to Django server
         response = requests.post(DJANGO_SERVER_URL, json=json_data)
         if response.status_code == 201:
+            logging.info("Data sent to DB.")
             print("Data successfully sent to Django server.")
             pass
         else:
-            print(f"Failed to send data. Status code: {response.status_code}, Response: {response.text}")
+            logging.info(f"Failed to send data. Status code: {response.status_code}, Response: {response.text}")
     except Exception as e:
-        print(f"Error connecting to Django server: {e}")
+        logging.info(f"Error connecting to Django server: {e}")
 
 async def process_ships():
     """
