@@ -4,7 +4,7 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
 
-from tutorials.models import Plane,Entities, Ship
+from tutorials.models import Plane,Entities, Ship, AbstractIncident
 from tutorials.serializers import PlaneSerializer
 from rest_framework.decorators import api_view
 
@@ -48,6 +48,33 @@ def tutorial_list(request):
             latest_all = latest_planes + latest_ships
             
             return JsonResponse(latest_all,safe = False)
+        # NEW API - works for all object types:
+        if request.GET.get('apiversion', None) == "queryapi_v2":
+            #logging.info(f'queryapi_v2 reached with {request}')
+            requestedobjects = request.GET.getlist('objecttypes')
+            logging.info(requestedobjects)
+            
+            bbox_arr = (
+                float(request.GET.get('sw_lng', 0)),
+                float(request.GET.get('sw_lat', 0)),
+                float(request.GET.get('ne_lng', 0)),
+                float(request.GET.get('ne_lat', 0))
+            )
+            
+            response_objects = []
+            for object in requestedobjects:
+                if object == "planes":
+                    latest_planes = retriever.get_in_bbox(Plane,"Plane",bbox_arr)
+                    response_objects = response_objects + latest_planes
+                elif object == "ships":
+                    latest_ships = retriever.get_in_bbox(Ship,"Ship",bbox_arr)
+                    response_objects = response_objects + latest_ships
+                elif object == "abstractincidents":
+                    latest_incidents = retriever.get_incidents_in_bbox(bbox_arr)
+                    response_objects = response_objects + latest_incidents
+            #logging.info(f'Response objects: {response_objects}')
+            logging.info(f"Returned response objects")
+            return JsonResponse(response_objects,safe = False)
         
     
     elif request.method == 'POST':

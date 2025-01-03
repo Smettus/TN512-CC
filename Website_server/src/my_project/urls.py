@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # Include accounts URLs
     path('planes_query/', include("planes_query.urls")),
-    #path("accounts/", include("django.contrib.auth.urls")), # future
+    path('queryapi_v2/', include("queryapi_v2.urls")),
     path('', home, name="home"),
     path('C_and_C/', include("C_and_C.urls")),
 ]

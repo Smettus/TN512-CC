@@ -17,7 +17,7 @@ class IncidentGeneratorAPI():
         self.entries = 0    # same scheme as the others. replace this with UUID?
         
         # Generation settings
-        self.interval = [30, 120]    # set range in seconds
+        self.interval = [15, 30]    # set range in seconds
         # self.randomtime = True     
         # maybe set here a bbox to check if generated incident is in Belgium
         

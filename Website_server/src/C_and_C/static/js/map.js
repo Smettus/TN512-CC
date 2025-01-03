@@ -1,39 +1,27 @@
-// Setup the map
+// Setup the map - leaflet stuff
 var map = L.map('map', {
     center: [50.8446, 4.3933],
     zoom: 13,
     zoomcontrol: true
 });
-
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 osmLayer.addTo(map);
-
 var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: '&copy; <a href="https://www.esri.com/en-us/home">Esri</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 });
-
 var darkmodeLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: ['a', 'b', 'c'],
     maxZoom: 19
 });
-
 // Layer control
 var baseLayers = {
     "OpenStreetMap": osmLayer,
     "OSM - Dark": darkmodeLayer,
     "Satellite": satelliteLayer,
 };
-
-var planeLayerGroup = new L.LayerGroup().addTo(map);
-var shipLayerGroup = new L.LayerGroup().addTo(map);
-const addressSearchResults = new L.LayerGroup().addTo(map);
-
-var airportLayerGroup = new L.LayerGroup().addTo(map); // Group for airport markers
-var portLayerGroup = new L.LayerGroup().addTo(map); // Group for airport markers
-
 /*** Geocoder ***/
 // OSM Geocoder
 const osmGeocoder = new L.Control.geocoder({
@@ -52,7 +40,82 @@ osmGeocoder.on('markgeocode', e => {
    resultMarker.bindPopup(e.geocode.name).openPopup();
 });
 
+const addressSearchResults = new L.LayerGroup().addTo(map);
+
+// Data layers
+var planeLayerGroup = new L.LayerGroup().addTo(map);
+var shipLayerGroup = new L.LayerGroup().addTo(map);
+var abstractIncidentLayerGroup = new L.LayerGroup().addTo(map);
+var airportLayerGroup = new L.LayerGroup().addTo(map); // Group for airport markers
+var portLayerGroup = new L.LayerGroup().addTo(map); // Group for airport markers
+
+
+let isFetchingAirports = false;
+let isFetchingPorts = false;
+let isFetchingPlanes = false;
+let isFetching = false;
+
 let Markers = [];
+
+// Icons - fetch them async. for now only abstractIncident XXX todo, then set color later
+// let abstractIncident_icon = null;
+// async function fetchSvg(iconUrl) {
+//     try {
+//         const response = await fetch(iconUrl);
+//         if (!response.ok) throw new Error(`Failed to load SVG from ${iconUrl}`);
+//         return await response.text();
+//     } catch (error) {
+//         console.error("Error fetching SVG:", error);
+//         return null;  // Return null in case of an error
+//     }
+// }
+// (async () => {
+//     iconUrls = [
+//         staticUrl + 'icons/AbstractIncident_icon.svg',
+//     ];
+//     //const iconUrl = staticUrl + 'icons/AbstractIncident_icon.svg';
+
+//     const [abstractIncidentSvgText] = await Promise.all(
+//         iconUrls.map(url => fetchSvg(url))
+//     );
+//     // Fetch and store the SVG in the global variable
+
+//     let abstractIncidentSvg = abstractIncidentSvgText;
+//     //console.log(abstractIncidentSvg)
+
+//     abstractIncident_icon = L.divIcon({
+//         className: 'custom-svg-icon',
+//         html: abstractIncidentSvg,
+//         iconSize: [16, 16],  // Size of the icon
+//         iconAnchor: [8, 8],   // The anchor point of the icon
+//         popupAnchor: [0, -16] // Popup position relative to the icon
+//     });
+// })();
+// function changeSvgColor(svgString, color) {
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(svgString, 'image/svg+xml');
+//     const svgElement = doc.querySelector('svg');
+    
+//     // Change the fill color of all elements in the SVG
+//     const elements = svgElement.querySelectorAll('path, circle, rect, line');
+//     elements.forEach((element) => {
+//         element.setAttribute('fill', color);
+//     });
+
+//     // Return the updated SVG as a string
+//     const serializer = new XMLSerializer();
+//     return serializer.serializeToString(doc);
+// }
+
+const abstractIncident_icon = L.icon({
+    iconUrl: staticUrl + 'icons/AbstractIncident_icon.svg',
+    iconSize: [16, 16],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+});
+
+
+// FUNCTIONS:
 
 // Get bounding box of current map view
 function getBoundingBox() {
@@ -64,10 +127,6 @@ function getBoundingBox() {
         southeast: { lat: bounds.getSouthWest().lat, lng: bounds.getNorthEast().lng }
     };
 }
-
-let isFetchingAirports = false;
-let isFetchingPorts = false;
-let isFetchingPlanes = false;
 
 // Fetch airport data based on bounding box
 async function fetchAirportData() {
@@ -266,13 +325,51 @@ async function fetchPlaneData() {
         }
 
         const Objects = await response.json();
-        updatePlaneMarkers(JSON.parse(Objects));
+        updateMarkers(JSON.parse(Objects));
     } catch (error) {
         console.error('Error fetching plane data:', error);
     } finally {
         isFetchingPlanes = false;
     }
 }
+async function fetchData(objecttypes) {
+    // receives list like ['ship', 'plane', 'abstractincident'] and fetches that data
+
+    var bbox = getBoundingBox();
+
+    // todo, if no objecttypes, fetch all
+    var queryParams = new URLSearchParams();
+
+    objecttypes.forEach(type => queryParams.append('objecttypes', type));
+    queryParams.append('southwest_lat', bbox.southwest.lat);
+    queryParams.append('southwest_lng', bbox.southwest.lng);
+    queryParams.append('northeast_lat', bbox.northeast.lat);
+    queryParams.append('northeast_lng', bbox.northeast.lng);
+
+    var url = `/queryapi_v2/?${queryParams.toString()}`;
+
+    if (isFetching) return; // Prevent overlapping calls
+    isFetching = true;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch data:', response.status, response.text);
+            return;
+        }
+
+        const objects = await response.json();
+        updateMarkers(JSON.parse(objects));
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    } finally {
+        isFetching = false;
+    }
+}
+
 // Function to determine color based on altitude
 function getColorForAltitude(altitude) {
     if (isNaN(altitude)) {
@@ -290,8 +387,11 @@ function getColorForAltitude(altitude) {
     }
 }
 
-// Update the plane markers on the map
-function updatePlaneMarkers(Objects) {
+// Update markers on the map
+// XXX do it differently to not have that big lag, just move the marker or something?
+// because now the popup diseappears after every request and update of the map
+// ... solution is to give each marker an ID and keep track of them...
+function updateMarkers(Objects) {
     Markers.forEach(marker => {
         map.removeLayer(marker);
     });
@@ -371,9 +471,24 @@ function updatePlaneMarkers(Objects) {
     
                 Markers.push(marker);
             }
+        } else if (obj.Type == "AbstractIncident") {
+            const {lat, lon , msg, time} = obj.Properties;
+            //console.log(lat, lon, msg, time);
+            if (lat && lon) {
+                const marker = L.marker([lat, lon], {icon: abstractIncident_icon})
+                    .addTo(abstractIncidentLayerGroup)
+                    .bindPopup(`
+                        <div style="text-align: center;">
+                            <p><b>Latitude:</b> ${lat}°</p>
+                            <p><b>Longitude:</b> ${lon}°</p>
+                            <p><b>Message:</b> ${msg}</p>
+                            <p><b>Time:</b> ${time}</p>
+                        </div>
+                    `);
+                Markers.push(marker);
+            }
         }
     });
-    
 }
 
 
@@ -382,15 +497,22 @@ let debounceTimer;
 map.on('moveend', () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
+        fetchData(["abstractincidents", "ships", "planes"]); // get them all
         //fetchAirportData();  // Fetch airports based on bounding box
-        fetchPlaneData();    // Fetch plane data based on bounding box
+        //fetchPlaneData();    // Fetch plane data based on bounding box
         //fetchPortData();
     }, 500); // Prevent overlapping calls
 });
 L.control.layers(baseLayers).addTo(map);
 // Initial fetch of airport and plane data
 //fetchAirportData();
-fetchPlaneData();
+//fetchPlaneData();
 //fetchPortData();
 
-setInterval(fetchPlaneData, 2000);
+//setInterval(fetchPlaneData, 2000);
+
+// initial pull
+fetchData(["abstractincidents", "ships", "planes"]);
+setInterval(function() {
+    fetchData(["abstractincidents", "ships", "planes"]);
+}, 2000);

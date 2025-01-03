@@ -35,7 +35,7 @@ class ShipSerializer(serializers.ModelSerializer):
                   'COG')
         
         
-class IncidentSerializer(serializers.ModelSerializer):
+class AbstractIncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AbstractIncident
         # no id for the moment, as the db will generate it.

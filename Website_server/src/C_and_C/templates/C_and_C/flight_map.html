@@ -170,6 +170,10 @@
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <!-- Link to the external JavaScript file -->
+    <script>
+        // Pass Django's static URL to the JavaScript file
+        const staticUrl = "{% static '' %}";
+    </script>
     <script src="{% static 'js/map.js' %}"></script>
 
 </body>

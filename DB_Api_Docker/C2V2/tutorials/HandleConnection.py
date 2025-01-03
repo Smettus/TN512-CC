@@ -1,5 +1,5 @@
-from tutorials.models import Plane,Entities
-from tutorials.serializers import PlaneSerializer, ShipSerializer, IncidentSerializer
+from tutorials.models import Plane,Entities, AbstractIncident
+from tutorials.serializers import PlaneSerializer, ShipSerializer, AbstractIncidentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -100,7 +100,7 @@ class Handler():
 
         # Process each incident (it's already a list of dictionaries)
         for incident_data in abstractincidents:
-            incident_serializer = IncidentSerializer(data=incident_data)
+            incident_serializer = AbstractIncidentSerializer(data=incident_data)
             if incident_serializer.is_valid():
                 incident_serializer.save()
                 logging.info(f"Saved incident: {incident_serializer.data}")
@@ -159,9 +159,17 @@ class Retriever():
         elif type == "Ground":
             pass
         elif type == "AbstractIncident":
-            pass
-        
-
+            for obj in objects:
+                json_object = {
+                    "Type": type,
+                    "Properties": {
+                        "lat": obj.lat,
+                        "lon": obj.lon,
+                        "msg": obj.msg,
+                        "time": obj.time
+                    }
+                }
+                res.append(json_object)
         return res
     
     def is_in_bbox(self,lat, lng, bbox):
@@ -207,5 +215,16 @@ class Retriever():
         json_entries = self.generate_jsons(filtered_entries,type)
         
         return json_entries
-         
+    def get_incidents_in_bbox(self, bbox, model=AbstractIncident, type="AbstractIncident"):
+        # For now, need a seperate function, as it does not use the parent entry id thing like plane and ship
         
+        # Do a filter on the db entries:
+        sw_lng, sw_lat, ne_lng, ne_lat = bbox
+        filtered_incidents = model.objects.filter(
+            lat__gte=sw_lat,
+            lat__lte=ne_lat,
+            lon__gte=sw_lng,
+            lon__lte=ne_lng
+        )
+        jsonifyed_incidents = self.generate_jsons(filtered_incidents, type)
+        return jsonifyed_incidents
