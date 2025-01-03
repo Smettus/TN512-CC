@@ -46,6 +46,7 @@ class Handler():
                 return Response(plane_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
         # Return the serialized data as a response with HTTP 201 Created status
+        #logging.info(f"Saved planes.")
         return Response(plane_serializer.data, status=status.HTTP_201_CREATED)
     
     def Ship(self,req):
@@ -77,11 +78,10 @@ class Handler():
             if ship_serializer.is_valid():
                 # Save the valid data to the database
                 ship_serializer.save()
-                
             else:
                 # If the data is invalid, return validation errors
                 return Response(ship_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
+        #logging.info(f"Saved ships.")
         return Response(ship_serializer.data, status=status.HTTP_201_CREATED)
     
     
@@ -103,7 +103,7 @@ class Handler():
             incident_serializer = AbstractIncidentSerializer(data=incident_data)
             if incident_serializer.is_valid():
                 incident_serializer.save()
-                logging.info(f"Saved incident: {incident_serializer.data}")
+                #logging.info(f"Saved incident to DB")
             else:
                 logging.error(f"Failed to save incident: {incident_serializer.errors}")
                 return Response(incident_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -17,4 +17,8 @@ COPY . /app/
 WORKDIR /app
 
 # Lancer le script Python ou le serveur
-CMD ["python", "ship_api.py"]
+
+RUN curl -sSL https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh -o /usr/local/bin/wait-for-it && chmod +x /usr/local/bin/wait-for-it
+
+CMD ["sh", "-c", "echo 'Waiting for django C2V2 api' && wait-for-it django:${DJANGO_PORT} -- python ship_api.py"]
+#CMD ["python", "ship_api.py"]

@@ -19,6 +19,10 @@ WORKDIR /app
 # Install other dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements_FLIGHTAPI.txt
 
-CMD ["python", "flight_api.py"]
+
+RUN curl -sSL https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh -o /usr/local/bin/wait-for-it && chmod +x /usr/local/bin/wait-for-it
+
+CMD ["sh", "-c", "echo 'Waiting for django C2V2 api' && wait-for-it django:${DJANGO_PORT} -- python flight_api.py"]
+# CMD ["python", "flight_api.py"]
 
 
