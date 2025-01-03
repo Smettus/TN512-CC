@@ -94,7 +94,15 @@ To make the dockerization more efficient, It can be useful to a `.env` file. The
   EXTERNAL_PORT_SHIP_API=4000
   INTERNAL_PORT_API=80
   FRONTEND_PORT=8000
+
+  KEY_FLIGHT_API = PASSWORD FOR OPENSKY API https://openskynetwork.github.io/opensky-api/
+  USER_FLIGHT_API = OPENSKY USERNAME
+  KEY_SHIP_API = API KEY FOR https://aisstream.io/
+  SHIP_ENTRY = 0
+  FLIGHT_ENTRY = 0
 ```
+It is needed to provide your own credentials for the Opensky Network and the Ais Stream applications
+
 # 1. Access the Directory Containing the `docker-compose.yml` File
 Before running any Docker Compose commands, make sure you are in the directory containing the `docker-compose.yml` file. This file contains the configuration of the services that Docker Compose will manage (containers, networks, volumes, etc.).
 
@@ -103,6 +111,12 @@ Use the cd command to navigate to the directory where the docker-compose.yml fil
 cd /path/to/your/folder
 ```
 Replace `/path/to/your/folder` with the actual path to the directory containing the docker-compose.yml file.
+
+## 1 Bis. Cloning the Opensky Api githuh
+The files of the Opensky Api have to be cloned manually in the project in the folder `\TN512-CC\DB_Api_Docker\planes` using the command :
+```bash
+  git clone https://github.com/openskynetwork/opensky-api.git
+````
 
 # 2. Running a Docker Compose File
 docker-compose up Command To start all the services defined in the docker-compose.yml file, use the following command:
@@ -229,3 +243,11 @@ CMD ["sh", "-c", "echo 'Waiting for database to be ready...' && wait-for-it db:$
 Without this command, the Django application would attempt to connect to the database before it is ready, which would cause errors such as ```"Unable to connect to database."``` The ```wait-for-it``` script ensures that Django waits for the database service to be fully operational before attempting to connect, preventing these connection issues and ensuring smooth startup.
 
 
+# User accounts
+Django-based login/logout system was introduced. Upon trying to login, you first need to create an account, after which the account status is waiting to be approved by the administrator. The admin can manage the accounts from ‘http://127.0.0.1:8000/admin’ (credentials are admin-admin for now). A basic account that can be used to access the resources is username 'test' password 'test'. Under user profiles, the admin can manage accounts:
+1) approve accounts
+2) set role (admin, editor, viewer) and an access level
+3) set a special permission flag
+None of them limit anything atm though.
+
+Under the Django app ‘accounts’, the routing system can be viewed. To view the html of the pages, see ‘my_project/templates/accounts’.
