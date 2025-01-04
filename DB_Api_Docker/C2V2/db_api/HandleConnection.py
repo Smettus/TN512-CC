@@ -1,5 +1,5 @@
-from tutorials.models import Plane,Entities, AbstractIncident
-from tutorials.serializers import PlaneSerializer, ShipSerializer, AbstractIncidentSerializer
+from db_api.models import Plane,Entities, AbstractIncident
+from db_api.serializers import PlaneSerializer, ShipSerializer, AbstractIncidentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 

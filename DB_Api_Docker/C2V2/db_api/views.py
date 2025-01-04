@@ -4,8 +4,8 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
 
-from tutorials.models import Plane,Entities, Ship, AbstractIncident
-from tutorials.serializers import PlaneSerializer
+from db_api.models import Plane,Entities, Ship, AbstractIncident
+from db_api.serializers import PlaneSerializer
 from rest_framework.decorators import api_view
 
 from .HandleConnection import Handler, Retriever
@@ -17,7 +17,7 @@ logging.basicConfig(
 
 
 @api_view(['GET', 'POST', 'DELETE'])
-def tutorial_list(request):
+def db_list(request):
     handler = Handler()
     retriever = Retriever()
     # GET list of Plane, POST a new Plane, DELETE all Plane
@@ -94,7 +94,7 @@ def tutorial_list(request):
         count = Plane.objects.all().delete()
         return JsonResponse({'message': '{} Planes were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
     
-@api_view(['GET', 'PUT', 'DELETE'])
+'''@api_view(['GET', 'PUT', 'DELETE'])
 def tutorial_detail(request, pk):
     # find Plane by pk (id)
     try: 
@@ -118,4 +118,4 @@ def tutorial_detail(request, pk):
     elif request.method == 'DELETE': 
         plane.delete() 
         return JsonResponse({'message': 'Plane was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-        
+  '''      

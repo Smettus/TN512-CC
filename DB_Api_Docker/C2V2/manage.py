@@ -3,7 +3,7 @@
 import os
 import sys
 from django.db import connection
-import pymysql
+
 
 
 def main():

@@ -1,4 +1,3 @@
-import base64
 import json
 import websockets
 from datetime import datetime

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TutorialsConfig(AppConfig):
+class Db_ApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'tutorials'
+    name = 'db_api'

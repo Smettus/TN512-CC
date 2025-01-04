@@ -6,6 +6,7 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
 **/migrations/*
 !**/migrations/__init__.py
 *.bat

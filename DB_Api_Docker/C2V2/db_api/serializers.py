@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from tutorials.models import Plane, Ship, AbstractIncident
+from db_api.models import Plane, Ship, AbstractIncident
  
  
 class PlaneSerializer(serializers.ModelSerializer):
