@@ -112,12 +112,6 @@ cd /path/to/your/folder
 ```
 Replace `/path/to/your/folder` with the actual path to the directory containing the docker-compose.yml file.
 
-## 1 Bis. Cloning the Opensky Api githuh
-The files of the Opensky Api have to be cloned manually in the project in the folder `\TN512-CC\DB_Api_Docker\planes` using the command :
-```bash
-  git clone https://github.com/openskynetwork/opensky-api.git
-````
-
 # 2. Running a Docker Compose File
 docker-compose up Command To start all the services defined in the docker-compose.yml file, use the following command:
 
