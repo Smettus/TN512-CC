@@ -388,6 +388,13 @@ function getColorForAltitude(altitude) {
     }
 }
 
+function getColorForShipSpeed(SOG) {
+    if (SOG < 1) {
+        return "#00ff00"; // Green for ships not moving       
+    } else {
+        return "#ff0000"; // Red for moving ships
+    }
+}
 // Update markers on the map
 // XXX do it differently to not have that big lag, just move the marker or something?
 // because now the popup diseappears after every request and update of the map
@@ -401,9 +408,9 @@ function updateMarkers(Objects) {
     Objects.forEach(obj => {
         if (obj.Type == "Ship") {
             // Code pour gérer les navires
-            const { latitude, longitude, enemy, time_position, SOG, COG } = obj.Properties;
-    
-            const shipColor = "#000000"; // Changez cela si nécessaire
+            const { latitude, longitude, enemy, time_position, SOG, COG, ShipName } = obj.Properties;
+            
+            let shipColor = getColorForShipSpeed(parseFloat(SOG));
             const track = isNaN(COG) ? 0 : parseFloat(COG);
     
             if (latitude && longitude) {
@@ -422,10 +429,11 @@ function updateMarkers(Objects) {
                     .addTo(map)
                     .bindPopup(`
                         <div style="text-align: center;">
+                            <p><b>Ship Name:</b> ${ShipName}</p>
                             <p><b>Latitude:</b> ${latitude}°</p>
                             <p><b>Longitude:</b> ${longitude}°</p>
                             <p><b>Enemy:</b> ${enemy}</p>
-                            <p><b>SOG:</b> ${SOG}°</p>
+                            <p><b>SOG:</b> ${SOG} kt</p>
                             <p><b>COG:</b> ${COG}°</p>
                         </div>
                     `);

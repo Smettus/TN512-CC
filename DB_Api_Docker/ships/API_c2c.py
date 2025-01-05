@@ -32,9 +32,10 @@ class ShipAPI:
                         
                         if message["MessageType"] == "PositionReport":
                             ais_message = message['Message']['PositionReport']
+                            metadata = message['MetaData']
                             mmsi = ais_message.get('UserID')
                             if mmsi:
-                                self.ships_dict[mmsi] = self.generate_ship_json(ais_message)
+                                self.ships_dict[mmsi] = self.generate_ship_json(ais_message, metadata)
                     
                     except asyncio.TimeoutError:
                         continue  # Continue if we timeout waiting for a message
@@ -46,7 +47,7 @@ class ShipAPI:
         return [json.loads(ship_data) for ship_data in self.ships_dict.values()]
     from datetime import datetime
 
-    def generate_ship_json(self, data):
+    def generate_ship_json(self, data, meta):
         """
         Convert AIS data into JSON format for a ship.
         """
@@ -67,7 +68,8 @@ class ShipAPI:
                 "enemy": 0,
                 "time_position": time_position_iso,
                 "SOG": data.get('Sog', -1),
-                "COG": data.get('Cog', -1)
+                "COG": data.get('Cog', -1),
+                "ShipName": meta.get('ShipName', None)
             },
         }
         return json.dumps(json_object, indent=4)

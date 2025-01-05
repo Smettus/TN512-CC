@@ -48,6 +48,7 @@ class Ship(models.Model):
     time_position = models.DateTimeField(max_length=255)
     SOG = models.FloatField()
     COG = models.FloatField()
+    ShipName = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'ship'

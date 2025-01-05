@@ -151,7 +151,8 @@ class Retriever():
                         "enemy": obj.enemy,  # Assuming False unless there's a reason to change it
                         "time_position": str(obj.time_position),
                         "SOG": obj.SOG,
-                        "COG": obj.COG
+                        "COG": obj.COG,
+                        "ShipName": obj.ShipName
                     }
                 }
                 res.append(json_object)

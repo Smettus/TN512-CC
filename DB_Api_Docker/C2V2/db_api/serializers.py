@@ -32,7 +32,9 @@ class ShipSerializer(serializers.ModelSerializer):
                   'enemy',
                   'time_position',
                   'SOG',
-                  'COG')
+                  'COG',
+                  'ShipName'
+                  )
         
         
 class AbstractIncidentSerializer(serializers.ModelSerializer):

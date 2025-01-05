@@ -33,7 +33,7 @@ def send_to_django(data):
         'Type': "Ship",
         'Ships': json.dumps(data,indent=4),
     }
-    #logging.info(json_data)
+    # logging.info(json_data)
     try:
         # Send POST request to Django server
         response = requests.post(DJANGO_SERVER_URL, json=json_data)
